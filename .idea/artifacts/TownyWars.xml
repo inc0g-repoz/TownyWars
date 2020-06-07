@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TownyWars">
+    <output-path>E:/Users/b/Desktop/spigot/plugins</output-path>
+    <root id="archive" name="TownyWars.jar">
+      <element id="module-output" name="TownyWars" />
+    </root>
+  </artifact>
+</component>
