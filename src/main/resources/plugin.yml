@@ -1,6 +1,24 @@
 name: TownyWars
-version: ${project.version}
+version: 1.0
 main: com.etysoft.townywars.TownyWars
 api-version: 1.13
 authors: [karlov_m]
 description: A simple arcade plugin for wars with Towny.
+commands:
+  townwars:
+    description: TownyWars main command
+    usage: /<command>
+    aliases: twar
+permissions:
+  townywars.admin:
+    default: op
+    children:
+      aun.info: true
+      aun.edittown: true
+    description: Allows all commands
+  townywars.use:
+    default: op
+    description: Simple information using
+  townywars.mayor:
+    default: op
+    description:  Declare a war and manage it

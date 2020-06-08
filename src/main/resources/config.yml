@@ -1,0 +1,18 @@
+# TownyWars 1.0 configuration file
+
+# TRANSLATIONS (%s is a placeholder for version, name etc.)
+
+#Info
+msg-compatible: "&aCompatible with current Towny version"
+msg-ncompatible: "&cWasn't tested with Towny %s"
+
+#Wars
+msg-declare: "&b%s &cdeclared war on &6%j!"
+msg-end: "&b%s &cwin war on &6%j!"
+msg-notown: "&cYou don't belong to a town!"
+msg-wrtown: "&cWrong town!"
+msg-ntown: "&cNeutral town can't be in war!"
+
+#Other
+no-args: "&cWrong arguments"
+no-perm: "&cYou do not have permission."
