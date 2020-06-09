@@ -7,12 +7,47 @@ msg-compatible: "&aCompatible with current Towny version"
 msg-ncompatible: "&cWasn't tested with Towny %s"
 
 #Wars
+
+#Set "2" for town and global announce, "1" for only town and "0" to no announce.
+public-announce-neutral: 2 # "3" option is only command sender (only in neutrals)
+public-announce-warstart: 2
+public-announce-warend: 2
+
+price-declare: 200.0
+price-neutral: 200.0
+
+# Only delete looser town without adding its chunks to winner
+only-town-delete: false
+
 msg-declare: "&b%s &cdeclared war on &6%j!"
 msg-end: "&b%s &cwin war on &6%j!"
 msg-notown: "&cYou don't belong to a town!"
 msg-wrtown: "&cWrong town!"
 msg-ntown: "&cNeutral town can't be in war!"
+msg-war: "&bCurrent wars: "
+msg-nlist: "&aNeutral towns: "
+msg-non: "&bNow town &6%s&b is neutral"
+msg-noff: "&bNow town &6%s&b is no longer neutral!"
+msg-listde: "&cNo neutral towns!"
+msg-warde: "&cNo active wars!"
+msg-tde: "&aTown doesn't exists!"
+msg-win: "&aWinner! &bYour town win the war and now you have all territory of loser town!"
+msg-lose: "&cLose! &bYour town lose the war and now all your territory has another town!"
+msg-points: "&bPoints: &6&s &bvs &6&k"
+msg-money: "You must have %s to do that!"
 
 #Other
-no-args: "&cWrong arguments"
+no-args: "&cWrong arguments. Try to use &b/twar help"
 no-perm: "&cYou do not have permission."
+
+#Traditionnaly features
+trfeatures: true
+bye-bye: "&6Пока-пока, &b%s.&6 F."
+
+#Help
+ht: "&bHelp"
+ht1: "&b/twar declare <town>&f- &6declare &fwar to town"
+ht2: "&b/twar n&f- toggle &6neutrality &fof your town"
+ht3: "&b/twar st&f- see &6active wars &flist with points"
+ht4: "&b/twar nlist&f- see &6neutral &ftowns list"
+ht5: "&b/twar reload&f- &6reload &fall config files"

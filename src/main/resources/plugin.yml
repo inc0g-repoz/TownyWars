@@ -1,7 +1,6 @@
 name: TownyWars
-version: 1.0
+version: 1.0-1.15
 main: com.etysoft.townywars.TownyWars
-api-version: 1.13
 authors: [karlov_m]
 description: A simple arcade plugin for wars with Towny.
 commands:
