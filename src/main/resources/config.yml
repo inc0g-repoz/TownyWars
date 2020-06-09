@@ -33,7 +33,7 @@ msg-warde: "&cNo active wars!"
 msg-tde: "&aTown doesn't exists!"
 msg-win: "&aWinner! &bYour town win the war and now you have all territory of loser town!"
 msg-lose: "&cLose! &bYour town lose the war and now all your territory has another town!"
-msg-points: "&bPoints: &6&s &bvs &6&k"
+msg-points: "&bPoints: &6%s &bvs &6%k"
 msg-money: "You must have %s to do that!"
 
 #Other
@@ -43,11 +43,12 @@ no-perm: "&cYou do not have permission."
 #Traditionnaly features
 trfeatures: true
 bye-bye: "&6Пока-пока, &b%s.&6 F."
+block-town-delete: true
 
 #Help
 ht: "&bHelp"
 ht1: "&b/twar declare <town>&f- &6declare &fwar to town"
-ht2: "&b/twar n&f- toggle &6neutrality &fof your town"
-ht3: "&b/twar st&f- see &6active wars &flist with points"
-ht4: "&b/twar nlist&f- see &6neutral &ftowns list"
-ht5: "&b/twar reload&f- &6reload &fall config files"
+ht2: "&b/twar n &f- toggle &6neutrality &fof your town"
+ht3: "&b/twar st &f- see &6active wars &flist with points"
+ht4: "&b/twar nlist &f- see &6neutral &ftowns list"
+ht5: "&b/twar reload &f- &6reload &fall config files"

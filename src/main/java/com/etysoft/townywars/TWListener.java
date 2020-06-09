@@ -1,14 +1,11 @@
 package com.etysoft.townywars;
 
 import com.palmergames.bukkit.towny.TownyMessaging;
-import com.palmergames.bukkit.towny.event.PreDeleteTownEvent;
-import com.palmergames.bukkit.towny.event.TownAddResidentEvent;
-import com.palmergames.bukkit.towny.event.TownPreRenameEvent;
-import com.palmergames.bukkit.towny.event.TownRemoveResidentEvent;
+import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.event.*;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -48,9 +45,9 @@ public class TWListener implements Listener {
 
 
     @EventHandler
-    public void rename(TownPreRenameEvent n)
+    public void nt(NewTownEvent n)
     {
-
+         WarManager.getInstance().setNeutrality(true, n.getTown());
 
 
     }
@@ -58,15 +55,20 @@ public class TWListener implements Listener {
     @EventHandler
     public void Delete(PreDeleteTownEvent n)
     {
+       if(WarManager.getInstance().isInWar(n.getTown()) && TownyWars.instance.getConfig().getBoolean("block-town-delete"))
+       {
+           n.setCancelled(true);
+           n.setCancelMessage("Town in war!");
 
-        if (!WarManager.getInstance().isNeutral(n.getTown())) {
-        WarManager.getInstance().setNeutrality(false, n.getTown());
-        }
-        if(TownyWars.instance.getConfig().getBoolean("trfeatures"))
-        {
-            TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("bye-bye").replace("%s", n.getTown().getName())));
-        }
-
+       }
+        else {
+           if (!WarManager.getInstance().isNeutral(n.getTown())) {
+               WarManager.getInstance().setNeutrality(false, n.getTown());
+           }
+           if (TownyWars.instance.getConfig().getBoolean("trfeatures")) {
+               TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("bye-bye").replace("%s", n.getTown().getName())));
+           }
+       }
     }
 
     @EventHandler

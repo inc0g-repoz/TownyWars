@@ -1,8 +1,16 @@
 package com.etysoft.townywars;
 
+import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public final class TownyWars extends JavaPlugin {
 
@@ -47,6 +55,41 @@ public final class TownyWars extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new TWListener(), this);
         instance = this;
         getCommand("townwars").setExecutor(new TWCommands(this));
+        getCommand("townwars").setTabCompleter(new TabCompleter() {
+            @Override
+            public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+                List<String> tabs = new ArrayList<>();
+                if(args.length == 1)
+                {
+                    tabs.add("declare");
+                    tabs.add("n");
+                    tabs.add("nlist");
+                    if(sender.hasPermission("twar.admin"))
+                    {
+                        tabs.add("reload");
+                        tabs.add("fend");
+                    }
+                    tabs.add("info");
+                    tabs.add("help");
+                }
+                else
+                {
+                    if(args[0].equals("declare") || args[0].equals("fend"))
+                    {
+                        List<Town> towns = TownyUniverse.getInstance().getDataSource().getTowns();
+                        for(Town t : WarManager.getInstance().getNTowns())
+                        {
+                            towns.remove(t);
+                        }
+                        for(Town t : towns)
+                        {
+                            tabs.add(t.getName());
+                        }
+                    }
+                }
+                return tabs;
+            }
+        });
         Bukkit.getConsoleSender().sendMessage("Initializing bStats metrics...");
         try {
             int pluginId = 7801; // <-- Replace with the id of your plugin!

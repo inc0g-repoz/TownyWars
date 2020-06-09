@@ -79,15 +79,15 @@ public class TWCommands implements CommandExecutor {
                                             Town tod = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getTown(args[1]);
                                             if (tod != null) {
                                                 if (!WarManager.instance.isNeutral(tod) && !WarManager.instance.isNeutral(r.getTown())) {
-                                                    boolean success = WarManager.instance.declare(r.getTown(), tod);
-                                                    if(!success)
-                                                    {
-                                                        p.sendMessage(fun.cstring(instance.getConfig().getString("msg-wrtown")));
-                                                    }
-                                                    else
-                                                    {
-                                                        r.getTown().pay(TownyWars.instance.getConfig().getDouble("price-declare"), "War declare");                                                    }
+                                                    if(!WarManager.getInstance().isInWar(r.getTown())) {
+                                                        boolean success = WarManager.instance.declare(r.getTown(), tod);
 
+                                                        if (!success) {
+                                                            p.sendMessage(fun.cstring(instance.getConfig().getString("msg-wrtown")));
+                                                        } else {
+                                                            r.getTown().pay(TownyWars.instance.getConfig().getDouble("price-declare"), "War declare");
+                                                        }
+                                                    }
                                                 } else {
                                                     p.sendMessage(fun.cstring(instance.getConfig().getString("msg-ntown")));
                                                 }
