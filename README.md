@@ -14,6 +14,7 @@ There are neutral towns and non-neutral ones. Only non-neutral cities can declar
 | TownyWars version | Towny(tested) | Minecraft Version |
 | ------ | ------ | ----- |
 | *.-1.15 | 0.96.1.0 | 1.15.*
+| *.-1.12 | 0.93.1.0 | 1.12.*
 ## Commands
 
 ___
