@@ -103,7 +103,7 @@ public final class TownyWars extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("Initializing config.yml...");
         ConfigInit();
            wm = new WarManager();
-        Bukkit.getConsoleSender().sendMessage("TownWars " + this.getDescription().getVersion() + " successfully enabled!");
+        Bukkit.getConsoleSender().sendMessage("TownyWars " + this.getDescription().getVersion() + " successfully enabled!");
     }
     private String supported = "0.93.1.0";
     public boolean isCompatible(String version)
