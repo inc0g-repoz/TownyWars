@@ -4,7 +4,7 @@
 
 #Info
 msg-compatible: "&aCompatible with current Towny version"
-msg-ncompatible: "&cWasn't tested with Towny %s"
+msg-nocompatible: "&cWasn't tested with Towny %s"
 
 #Wars
 
