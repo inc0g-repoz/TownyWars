@@ -16,7 +16,7 @@ import java.util.List;
 public final class TownyWars extends JavaPlugin {
 
 
-    public Plugin towny;
+    public static Plugin towny;
     public static TownyWars instance;
     public WarManager wm;
     @Override
