@@ -104,9 +104,10 @@ public class WarManager {
 
                 }
                 win.setAdminEnabledPVP(false);
+
                 TownyMessaging.sendTownMessage(proig, fun.cstring(TownyWars.instance.getConfig().getString("msg-lose")));
                 TownyMessaging.sendTownMessage(win, fun.cstring(TownyWars.instance.getConfig().getString("msg-win")));
-                TownyUniverse.getInstance().getDataSource().removeTown(proig);
+
                 wars.remove(w);
                 if (townswarlist.containsKey(w.getJertva().getName())) {
                     townswarlist.remove(w.getJertva().getName());
@@ -114,6 +115,8 @@ public class WarManager {
                 if (townswarlist.containsKey(w.getAttacker().getName())) {
                     townswarlist.remove(w.getAttacker().getName());
                 }
+                TownyUniverse.getInstance().getDataSource().deleteTown(proig);
+                TownyUniverse.getInstance().getDataSource().removeTown(proig);
 
             } else {
                 Bukkit.getConsoleSender().sendMessage("Proig is null!");
@@ -144,17 +147,23 @@ public class WarManager {
     public boolean declare(Town a, Town j)
     {
        if(a != j) {
-          a.setAdminEnabledPVP(false);
-          j.setAdminEnabledPVP(false);
-           wars.add(new War(a, j, this));
-           if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 2) {
-               Bukkit.broadcastMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
-           } else if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 1) {
-               TownyMessaging.sendTownMessagePrefixed(j, fun.cstring(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
-               TownyMessaging.sendTownMessagePrefixed(a, fun.cstring(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
-           }
+           if(!WarManager.getInstance().isInWar(a) && !WarManager.getInstance().isInWar(j)) {
+               a.setAdminEnabledPVP(true);
+               j.setAdminEnabledPVP(true);
+               wars.add(new War(a, j, this));
+               if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 2) {
+                   Bukkit.broadcastMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
+               } else if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 1) {
+                   TownyMessaging.sendTownMessagePrefixed(j, fun.cstring(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
+                   TownyMessaging.sendTownMessagePrefixed(a, fun.cstring(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
+               }
 
-           return true;
+               return true;
+           }
+           else
+           {
+               return  false;
+           }
        }
        else
        {

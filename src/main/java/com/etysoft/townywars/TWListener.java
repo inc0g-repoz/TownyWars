@@ -8,13 +8,16 @@ import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 public class TWListener implements Listener {
 
@@ -62,7 +65,7 @@ public class TWListener implements Listener {
 
        }
         else {
-           if (!WarManager.getInstance().isNeutral(n.getTown())) {
+           if (WarManager.getInstance().isNeutral(n.getTown())) {
                WarManager.getInstance().setNeutrality(false, n.getTown());
            }
            if (TownyWars.instance.getConfig().getBoolean("trfeatures")) {
@@ -100,10 +103,34 @@ public class TWListener implements Listener {
             return;
         }
         EntityDamageByEntityEvent edbee = (EntityDamageByEntityEvent) edc;
-        if (!(edbee.getDamager() instanceof Player)) {
+        Player attacker;
+        if(edbee.getDamager() instanceof  Arrow)
+        {
+            Arrow attacker2 = (Arrow) edbee.getDamager();
+            ProjectileSource attacker23 =  attacker2.getShooter();
+            if(attacker23 instanceof Player)
+            {
+                attacker = (Player) attacker23;
+            }
+            else
+            {
+
+                return;
+            }
+        }
+        else if(edbee.getDamager() instanceof Player)
+        {
+
+            attacker = (Player) edbee.getDamager();
+        }
+        else
+        {
             return;
         }
-        Player attacker = (Player) edbee.getDamager();
+
+
+
+
         Player victim = (Player) edbee.getEntity();
         try {
 

@@ -186,31 +186,37 @@ public class TWCommands implements CommandExecutor {
                             try {
                                 Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(sender.getName());
                                 if (r.hasTown()) {
-                                    if (r.getTown().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-neutral")) {
-                                        int nmessage = TownyWars.instance.getConfig().getInt("public-announce-neutral");
-                                        if (WarManager.getInstance().isNeutral(r.getTown())) {
-                                            r.getTown().pay(TownyWars.instance.getConfig().getDouble("price-neutral"), "Neutrality toggle");
-                                            WarManager.getInstance().setNeutrality(false, r.getTown());
+                                    if(!WarManager.getInstance().isInWar(r.getTown())) {
+                                        if (r.getTown().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-neutral")) {
+                                            int nmessage = TownyWars.instance.getConfig().getInt("public-announce-neutral");
+                                            if (WarManager.getInstance().isNeutral(r.getTown())) {
+                                                r.getTown().pay(TownyWars.instance.getConfig().getDouble("price-neutral"), "Neutrality toggle");
+                                                WarManager.getInstance().setNeutrality(false, r.getTown());
 
-                                            if (nmessage == 3) {
-                                                sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
-                                            } else if (nmessage == 2) {
-                                                TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
-                                            } else if (nmessage == 1) {
-                                                TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
+                                                if (nmessage == 3) {
+                                                    sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
+                                                } else if (nmessage == 2) {
+                                                    TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
+                                                } else if (nmessage == 1) {
+                                                    TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
+                                                }
+
+                                            } else {
+                                                WarManager.getInstance().setNeutrality(true, r.getTown());
+                                                if (nmessage == 3) {
+                                                    sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
+                                                } else if (nmessage == 2) {
+                                                    TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
+                                                } else if (nmessage == 1) {
+                                                    TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
+                                                }
+
                                             }
-
-                                        } else {
-                                            WarManager.getInstance().setNeutrality(true, r.getTown());
-                                            if (nmessage == 3) {
-                                                sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
-                                            } else if (nmessage == 2) {
-                                                TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
-                                            } else if (nmessage == 1) {
-                                                TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
-                                            }
-
                                         }
+                                    }
+                                    else
+                                    {
+                                        sender.sendMessage("You must be not in war!");
                                     }
                                 }
                                 else

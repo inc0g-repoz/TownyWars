@@ -144,6 +144,7 @@ public final class TownyWars extends JavaPlugin {
         getConfig().addDefault("only-town-delete", false);
         getConfig().addDefault("bye-bye", "&6Пока-пока, &b%s.&6 F.");
         saveDefaultConfig();
+        instance.reloadConfig();
     }
 
     @Override
