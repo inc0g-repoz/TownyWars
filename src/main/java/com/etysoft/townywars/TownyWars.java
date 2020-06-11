@@ -1,7 +1,8 @@
 package com.etysoft.townywars;
 
-import com.palmergames.bukkit.towny.TownyUniverse;
+
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -76,7 +77,7 @@ public final class TownyWars extends JavaPlugin {
                 {
                     if(args[0].equals("declare") || args[0].equals("fend"))
                     {
-                        List<Town> towns = TownyUniverse.getInstance().getDataSource().getTowns();
+                        List<Town> towns = TownyUniverse.getDataSource().getTowns();
                         for(Town t : WarManager.getInstance().getNTowns())
                         {
                             towns.remove(t);
@@ -104,7 +105,7 @@ public final class TownyWars extends JavaPlugin {
            wm = new WarManager();
         Bukkit.getConsoleSender().sendMessage("TownWars " + this.getDescription().getVersion() + " successfully enabled!");
     }
-    private String supported = "0.96.1.0";
+    private String supported = "0.93.1.0";
     public boolean isCompatible(String version)
     {
         return supported.contains(version);

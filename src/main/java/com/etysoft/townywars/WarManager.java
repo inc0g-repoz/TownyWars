@@ -1,13 +1,13 @@
 package com.etysoft.townywars;
 
-import com.palmergames.bukkit.towny.TownyAPI;
+
 import com.palmergames.bukkit.towny.TownyMessaging;
-import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.db.TownyDataSource;
 import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import com.palmergames.bukkit.towny.object.TownBlockType;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
 import org.bukkit.Bukkit;
 
 import javax.xml.bind.Marshaller;
@@ -94,7 +94,7 @@ public class WarManager {
 
                             tb.setTown(win);
 
-                            TownyUniverse.getInstance().getDataSource().saveTownBlock(tb);
+                            TownyUniverse.getDataSource().saveTownBlock(tb);
 
 
                         } catch (Exception e) {
@@ -115,8 +115,8 @@ public class WarManager {
                 if (townswarlist.containsKey(w.getAttacker().getName())) {
                     townswarlist.remove(w.getAttacker().getName());
                 }
-                TownyUniverse.getInstance().getDataSource().deleteTown(proig);
-                TownyUniverse.getInstance().getDataSource().removeTown(proig);
+                TownyUniverse.getDataSource().deleteTown(proig);
+                TownyUniverse.getDataSource().removeTown(proig);
 
             } else {
                 Bukkit.getConsoleSender().sendMessage("Proig is null!");

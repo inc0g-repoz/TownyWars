@@ -2,11 +2,11 @@ package com.etysoft.townywars;
 
 import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownyMessaging;
-import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.EconomyException;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -64,7 +64,7 @@ public class TWCommands implements CommandExecutor {
                            Player p = (Player) sender;
 
                            try {
-                               Resident r =  com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(p.getName());
+                               Resident r =  TownyUniverse.getDataSource().getResident(p.getName());
                                if(r.hasTown())
                                {
                                     if(args.length > 1)
@@ -75,8 +75,8 @@ public class TWCommands implements CommandExecutor {
 
 
 
-                                        if( com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().hasTown(args[1])) {
-                                            Town tod = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getTown(args[1]);
+                                        if(TownyUniverse.getDataSource().hasTown(args[1])) {
+                                            Town tod = TownyUniverse.getDataSource().getTown(args[1]);
                                             if (tod != null) {
                                                 if (!WarManager.instance.isNeutral(tod) && !WarManager.instance.isNeutral(r.getTown())) {
                                                     if(!WarManager.getInstance().isInWar(r.getTown())) {
@@ -152,7 +152,7 @@ public class TWCommands implements CommandExecutor {
                        if(args.length > 1)
                        {
                            try {
-                               Town t = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
+                               Town t = TownyUniverse.getDataSource().getTown(args[1]);
                                War w = WarManager.getInstance().getTownWar(t);
                                WarManager.getInstance().end(w, false);
                                sender.sendMessage("War " + w.getJertva() + " VS " + w.getAttacker() + " stopped without pain ;)");
@@ -184,7 +184,7 @@ public class TWCommands implements CommandExecutor {
                     {
                         if(sender.hasPermission("twar.mayor")) {
                             try {
-                                Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(sender.getName());
+                                Resident r = TownyUniverse.getDataSource().getResident(sender.getName());
                                 if (r.hasTown()) {
                                     if(!WarManager.getInstance().isInWar(r.getTown())) {
                                         if (r.getTown().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-neutral")) {

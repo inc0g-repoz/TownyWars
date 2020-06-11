@@ -1,9 +1,8 @@
 package com.etysoft.townywars;
 
-import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
 import org.bukkit.Bukkit;
 
 import java.io.*;
@@ -65,7 +64,7 @@ public class DataManager {
 
                      try {
 
-                         neutralslist.add(TownyAPI.getInstance().getDataSource().getTown(line));
+                         neutralslist.add(TownyUniverse.getDataSource().getTown(line));
                          Bukkit.getConsoleSender().sendMessage("Town with name " + line + " added!");
                      } catch (NotRegisteredException ex) {
                          Bukkit.getConsoleSender().sendMessage("Town with name " + line + " not found!");

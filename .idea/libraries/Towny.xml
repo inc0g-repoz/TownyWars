@@ -1,7 +1,7 @@
 <component name="libraryTable">
-  <library name="Towny-0.96.1.0">
+  <library name="Towny">
     <CLASSES>
-      <root url="jar://E:/Users/b/Desktop/spigot/plugins/Towny-0.96.1.0.jar!/" />
+      <root url="jar://E:/Users/b/Desktop/spigot/plugins/Towny.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />
