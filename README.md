@@ -4,13 +4,12 @@
 
 ___
 
-A simple plugin that provides arcade wars with your Towny plugin. The author of the plugin is karlov_m. TownyWars is a fairly new plugin, but it is already able to provide simple, and most importantly interesting wars between cities.
-
+A simple plugin that provides arcade wars with your Towny plugin. The author of the plugin is karlov_m. TownyWars is a fairly new plugin, but it is already able to provide simple, and most importantly interesting wars between towns.
 ___
 
 ## 
 ## How it works
-There are neutral cities and non-neutral ones. Only non-neutral cities can declare war. After the Declaration of war, both cities have points that are calculated from the number of citizens. When a citizen from one city is killed by a citizen from another, one point is taken away from the city of the victim and transferred to the attacking city. During the war, both cities cannot turn on the Pvp.
+There are neutral towns and non-neutral ones. Only non-neutral cities can declare war. After the Declaration of war, both cities have points that are calculated from the number of citizens. When a citizen from one city is killed by a citizen from another, one point is taken away from the town of the victim and transferred to the attacking city. During the war, both towns cannot turn off the PvP. The winner gets the entire territory of the losing town.
 ## Compability with Towny
 | TownyWars version | Towny(tested) | Minecraft Version |
 | ------ | ------ | ----- |
