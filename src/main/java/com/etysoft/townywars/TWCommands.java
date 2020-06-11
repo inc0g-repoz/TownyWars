@@ -195,9 +195,9 @@ public class TWCommands implements CommandExecutor {
 
                                                 if (nmessage == 3) {
                                                     sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
-                                                } else if (nmessage == 2) {
-                                                    TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
                                                 } else if (nmessage == 1) {
+                                                    TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
+                                                } else if (nmessage == 2) {
                                                     TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
                                                 }
 

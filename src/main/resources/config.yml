@@ -43,6 +43,7 @@ no-perm: "&cYou do not have permission."
 #Traditionnaly features
 trfeatures: true
 bye-bye: "&6Пока-пока, &b%s.&6 F."
+# Town cancel pre-delete event not available in Towny on 1.12.2
 block-town-delete: true
 
 #Help
