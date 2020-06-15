@@ -11,9 +11,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import sun.plugin2.main.server.Plugin;
 
+import javax.security.auth.login.Configuration;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -133,11 +135,49 @@ public class TWCommands implements CommandExecutor {
                 else if(args[0].equals("st"))
                 {
                     if(WarManager.instance.getWars().size() > 0) {
-                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-war")));
-                        for (War w :
-                                WarManager.instance.getWars()) {
+                        if(args.length > 1)
+                        {
+                            FileConfiguration c = instance.getConfig();
+                            try {
+                                if(WarManager.getInstance().isInWar(TownyUniverse.getInstance().getDataSource().getTown(args[1])))
+                                {
 
-                            sender.sendMessage(fun.cstring("&e" + w.getAttacker().getName() + "&f(&b" + w.getAPoints() + ") VS " + "&e" + w.getJertva().getName() + "&f(&b" + w.getJPoints() + ")"));
+                                 War w = WarManager.getInstance().getTownWar(TownyUniverse.getInstance().getDataSource().getTown(args[1]));
+                                 sender.sendMessage(fun.cstring(c.getString("msg-warin1").replace("%s", args[1])));
+
+                                 String am = "";
+                                    String jm = "";
+                                    for (Town t:
+                                         w.getATowns()) {
+                                        am = am + t.getName() + "; ";
+                                    }
+                                    for (Town t:
+                                            w.getJTowns()) {
+                                        jm = jm + t.getName() + "; ";
+                                    }
+                                    sender.sendMessage(fun.cstring(c.getString("msg-warin2").replace("%s", w.getAttacker().getName()) + am));
+                                    sender.sendMessage(fun.cstring(c.getString("msg-warin2").replace("%s", w.getJertva().getName()) + jm));
+                                    sender.sendMessage(fun.cstring(c.getString("msg-warin3").replace("%s", w.getAttacker().getName()).replace("%k", w.getAPoints() + "").replace("%j", w.getJertva().getName()).replace("%y", w.getJPoints() + "")));
+                                }
+                                else
+                                {
+                                    sender.sendMessage(fun.cstring(c.getString("msg-peace")));
+                                }
+                            } catch (NotRegisteredException e) {
+                                sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-notown")));
+                            }
+                        }
+                        else {
+                            sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-war")));
+                            for (War w :
+                                    WarManager.instance.getWars()) {
+                                String members = "";
+                                if (w.getATowns().size() != 0 && w.getATowns().size() != 0) {
+                                    int m = w.getATowns().size() + w.getATowns().size();
+                                    members = "+ " + m;
+                                }
+                                sender.sendMessage(fun.cstring("&e" + w.getAttacker().getName() + "&f(&b" + w.getAPoints() + ") VS " + "&e" + w.getJertva().getName() + "&f(&b" + w.getJPoints() + ")" + members));
+                            }
                         }
                     }
                     else
@@ -178,67 +218,202 @@ public class TWCommands implements CommandExecutor {
                         sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
                     }
                 }
-                else if(args[0].equals("n"))
+                else if(args[0].equals("joinwar"))
                 {
-                    if(sender instanceof Player)
+                    if(sender.hasPermission("twar.mayor"))
                     {
-                        if(sender.hasPermission("twar.mayor")) {
-                            try {
-                                Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(sender.getName());
-                                if (r.hasTown()) {
-                                    if(!WarManager.getInstance().isInWar(r.getTown())) {
-                                        if (r.getTown().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-neutral")) {
-                                            int nmessage = TownyWars.instance.getConfig().getInt("public-announce-neutral");
-                                            if (WarManager.getInstance().isNeutral(r.getTown())) {
-                                                r.getTown().pay(TownyWars.instance.getConfig().getDouble("price-neutral"), "Neutrality toggle");
-                                                WarManager.getInstance().setNeutrality(false, r.getTown());
+                        Player p = (Player) sender;
 
-                                                if (nmessage == 3) {
-                                                    sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
-                                                } else if (nmessage == 1) {
-                                                    TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
-                                                } else if (nmessage == 2) {
-                                                    TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
-                                                }
+                        try {
+                            Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(p.getName());
+                            if(!WarManager.getInstance().isSended(r.getTown())) {
+                                if (args.length > 1) {
+                                    Town t = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
+                                    WarManager.getInstance().sendRequest(r.getTown(), t, p);
+                                } else {
+                                    sender.sendMessage(fun.cstring(instance.getConfig().getString("no-args")));
+                                }
+                            }
+                            else
+                            {
+                                sender.sendMessage("Alreay sended! Use /twar canceljw");
+                            }
+                        }
+                        catch (Exception e)
+                        {
 
-                                            } else {
-                                                WarManager.getInstance().setNeutrality(true, r.getTown());
-                                                if (nmessage == 3) {
-                                                    sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
-                                                } else if (nmessage == 2) {
-                                                    TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
-                                                } else if (nmessage == 1) {
-                                                    TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
-                                                }
+                        }
+                    }
+                    else
+                    {
+                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                    }
+                }
+                else if(args[0].equals("canceljw"))
+                {
+                    if(sender.hasPermission("twar.mayor"))
+                    {
+                        Player p = (Player) sender;
 
-                                            }
-                                        }
+                        try {
+                            Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(p.getName());
+                            if(WarManager.getInstance().isSended(r.getTown())) {
+                              WarManager.getInstance().removeRequest(r.getTown());
+                              sender.sendMessage("Removed your request!");
+
+                            }
+                            else
+                            {
+                                sender.sendMessage("You have not any requests sended!");
+                            }
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                    }
+                }
+                else if(args[0].equals("invite"))
+                {
+                    if(sender.hasPermission("twar.mayor"))
+                    {
+                        Player p = (Player) sender;
+
+                        try {
+                            Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(p.getName());
+                            if(args.length > 1)
+                            {
+                                Town from = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
+                                if(!WarManager.getInstance().isInWar(from)) {
+
+                                    boolean a = false;
+                                    if( WarManager.getInstance().getTownWar(r.getTown()).getAttacker() == r.getTown())
+                                    {
+                                        a = true;
+                                    }
+                                    if (WarManager.getInstance().hasRequest(from, r.getTown())) {
+                                        WarManager.getInstance().addTownToWar(from, WarManager.getInstance().getTownWar(r.getTown()), a);
+                                        sender.sendMessage("Accepted!");
                                     }
                                     else
                                     {
-                                        sender.sendMessage("You must be not in war!");
+                                        sender.sendMessage("No request!");
                                     }
                                 }
                                 else
                                 {
-                                    sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-money").replace("%s", TownyWars.instance.getConfig().getDouble("price-neutral") + "")));
+                                    sender.sendMessage("In war!");
                                 }
-                            } catch (Exception e) {
-                                Bukkit.getConsoleSender().sendMessage("TOWNYWARS CATCH AN ERROR:");
-                                e.printStackTrace();
-                                Bukkit.getConsoleSender().sendMessage("ERROR IN NEUTRALITY TOGGLE");
+                            }
+                            else
+                            {
+                                sender.sendMessage(fun.cstring(instance.getConfig().getString("no-args")));
                             }
                         }
-                        else
+                        catch (Exception e)
                         {
-                            sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                            sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-notown")));
                         }
                     }
-                   else
+                    else
                     {
-                        sender.sendMessage("You can't do it from Console!");
+                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
                     }
+                }
+                else if(args[0].equals("n"))
+                {
+                    if(args.length == 1) {
+                        if (sender instanceof Player) {
+                            if (sender.hasPermission("twar.mayor")) {
+                                try {
+                                    Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(sender.getName());
+                                    if (r.hasTown()) {
+                                        if (!WarManager.getInstance().isInWar(r.getTown())) {
+                                            if (r.getTown().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-neutral")) {
+                                                int nmessage = TownyWars.instance.getConfig().getInt("public-announce-neutral");
+                                                if (WarManager.getInstance().isNeutral(r.getTown())) {
+                                                    r.getTown().pay(TownyWars.instance.getConfig().getDouble("price-neutral"), "Neutrality toggle");
+                                                    WarManager.getInstance().setNeutrality(false, r.getTown());
 
+                                                    if (nmessage == 3) {
+                                                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
+                                                    } else if (nmessage == 1) {
+                                                        TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
+                                                    } else if (nmessage == 2) {
+                                                        TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
+                                                    }
+
+                                                } else {
+                                                    WarManager.getInstance().setNeutrality(true, r.getTown());
+                                                    if (nmessage == 3) {
+                                                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
+                                                    } else if (nmessage == 1) {
+                                                        TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
+                                                    } else if (nmessage == 2) {
+                                                        TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
+                                                    }
+
+                                                }
+                                            }
+                                        } else {
+                                            sender.sendMessage("You must be not in war!");
+                                        }
+                                    } else {
+                                        sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-money").replace("%s", TownyWars.instance.getConfig().getDouble("price-neutral") + "")));
+                                    }
+                                } catch (Exception e) {
+                                    Bukkit.getConsoleSender().sendMessage("TOWNYWARS CATCH AN ERROR:");
+                                    e.printStackTrace();
+                                    Bukkit.getConsoleSender().sendMessage("ERROR IN NEUTRALITY TOGGLE");
+                                }
+                            } else {
+                                sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                            }
+                        } else {
+                            sender.sendMessage("You can't do it from Console!");
+                        }
+                    }
+                    else {
+                        try {
+                            if(sender.hasPermission("twar.admin")) {
+                                Town t = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
+                                int nmessage = TownyWars.instance.getConfig().getInt("public-announce-neutral");
+                                if (WarManager.getInstance().isNeutral(t)) {
+
+                                    WarManager.getInstance().setNeutrality(false, t);
+
+                                    if (nmessage == 3) {
+                                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", t.getName())));
+                                    } else if (nmessage == 1) {
+                                        TownyMessaging.sendTownMessagePrefixed(t, fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", t.getName())));
+                                    } else if (nmessage == 2) {
+                                        TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", t.getName())));
+                                    }
+
+                                } else {
+                                    WarManager.getInstance().setNeutrality(true, t);
+                                    if (nmessage == 3) {
+                                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", t.getName())));
+                                    } else if (nmessage == 1) {
+                                        TownyMessaging.sendTownMessagePrefixed(t, fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", t.getName())));
+                                    } else if (nmessage == 2) {
+                                        TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", t.getName())));
+                                    }
+
+                                }
+                            }
+                            else
+                            {
+                                sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                            }
+                        } catch (Exception e) {
+                           sender.sendMessage("Wrong town!");
+                        }
+                    }
                 }
                 else if(args[0].equals("nlist"))
                 {

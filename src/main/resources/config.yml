@@ -1,10 +1,14 @@
-# TownyWars 1.0 configuration file
+# TownyWars 1.1 configuration file
 
 # TRANSLATIONS (%s is a placeholder for version, name etc.)
 
 #Info
 msg-compatible: "&aCompatible with current Towny version"
 msg-nocompatible: "&cWasn't tested with Towny %s"
+msg-warin1: "&bWar &c%s &binfo:"
+msg-warin2: "&bSide &6%s &btowns: &e"
+msg-warin3: "&aPoints: &b%s &7(%k) &fVS &b%j &7(%y)"
+msg-peace: "&cThat town hasn't war!"
 
 #Wars
 

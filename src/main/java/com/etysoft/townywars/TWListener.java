@@ -24,7 +24,11 @@ public class TWListener implements Listener {
     @EventHandler
     public void onjoin(PlayerJoinEvent e)
     {
-        //e.getPlayer().sendMessage("пошёл нахуй!");
+        if(e.getPlayer().hasPermission("twar.admin"))
+        {
+            e.getPlayer().sendMessage("TownyWars " + TownyWars.instance.getDescription().getVersion() + " working!");
+        }
+
     }
 
     @EventHandler

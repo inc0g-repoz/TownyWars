@@ -63,7 +63,9 @@ public final class TownyWars extends JavaPlugin {
                 {
                     tabs.add("declare");
                     tabs.add("n");
+                    tabs.add("st");
                     tabs.add("nlist");
+                    tabs.add("joinwar");
                     if(sender.hasPermission("twar.admin"))
                     {
                         tabs.add("reload");
@@ -86,8 +88,35 @@ public final class TownyWars extends JavaPlugin {
                             tabs.add(t.getName());
                         }
                     }
+                    else if(args[0].equals("n") || args[0].equals("st") || args[0].equals("joinwar"))
+                    {
+                        List<Town> towns = TownyUniverse.getInstance().getDataSource().getTowns();
+
+                        for(Town t : towns)
+                        {
+                            tabs.add(t.getName());
+                        }
+                    }
                 }
-                return tabs;
+                List<String> finals = new ArrayList<>();
+
+                for(String s : tabs)
+                {
+                    if(args.length == 1) {
+                        if (s.contains(args[0])) {
+                            finals.add(s);
+                        }
+                    }
+                    else if(args.length == 2)
+                    {
+                        if (s.contains(args[1])) {
+
+                            finals.add(s);
+                        }
+                    }
+                }
+
+                return finals;
             }
         });
         Bukkit.getConsoleSender().sendMessage("Initializing bStats metrics...");

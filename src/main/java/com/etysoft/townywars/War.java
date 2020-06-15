@@ -2,6 +2,9 @@ package com.etysoft.townywars;
 
 import com.palmergames.bukkit.towny.object.Town;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class War {
 
    private Town attacker;
@@ -9,6 +12,8 @@ public class War {
    private Integer apoints;
    private Integer jpoints;
    private WarManager wm;
+    private static Set<Town> asidetowns = new HashSet<Town>();
+    private static Set<Town> jsidetowns = new HashSet<Town>();
 
     public War(Town a, Town j, WarManager warm)
     {
@@ -19,6 +24,52 @@ public class War {
         wm = warm;
         wm.addTownToWarList(a);
         wm.addTownToWarList(j);
+    }
+
+    public boolean isASide(Town t) throws Exception {
+        if(asidetowns.contains(t))
+        {
+            return true;
+        }
+        else if(jsidetowns.contains(t))
+        {
+            return  false;
+        }
+     else
+        {
+            throw new Exception();
+        }
+
+    }
+
+    public void addATown(Town t)
+    {
+        asidetowns.add(t);
+    }
+
+    public void removeATown(Town t)
+    {
+        asidetowns.remove(t);
+    }
+
+    public void addJTown(Town t)
+    {
+        jsidetowns.add(t);
+    }
+
+    public void removeJTown(Town t)
+    {
+        jsidetowns.remove(t);
+    }
+
+    public  Set<Town> getJTowns()
+    {
+        return jsidetowns;
+    }
+
+    public  Set<Town> getATowns()
+    {
+        return asidetowns;
     }
 
     public Town getAttacker()
@@ -59,12 +110,12 @@ public class War {
     //if not null == war end (return victor)
     public Town minus(Town t)
     {
-        if(t == attacker)
+        if(t == attacker || asidetowns.contains(t))
         {
             minusA();
 
         }
-        if(t == jertva)
+        if(t == jertva || jsidetowns.contains(t))
         {
             minusJ();
         }
@@ -88,6 +139,14 @@ public class War {
         if(jertva == t)
         {
             return  true;
+        }
+        if(asidetowns.contains(t))
+        {
+            return true;
+        }
+        if(jsidetowns.contains(t))
+        {
+            return true;
         }
         return false;
     }
