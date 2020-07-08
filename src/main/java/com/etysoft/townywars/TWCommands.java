@@ -359,6 +359,10 @@ public class TWCommands implements CommandExecutor {
 
                                                 }
                                             }
+                                            else
+                                            {
+                                                sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-money").replace("%s", TownyWars.instance.getConfig().getDouble("price-neutral") + "")));
+                                            }
                                         } else {
                                             sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-ninwar")));
                                         }

@@ -39,6 +39,8 @@ public final class TownyWars extends JavaPlugin {
             {
                 Bukkit.getConsoleSender().sendMessage("Towny version wasn't tested with TownyWars!");
             }
+
+            // Deprecated, will be removed in future updates
             try {
                 Bukkit.getConsoleSender().sendMessage("Initializing Towny plugin before WarManager started for correct data...");
                 getServer().getPluginManager().enablePlugin(getServer().getPluginManager().getPlugin("Towny"));
