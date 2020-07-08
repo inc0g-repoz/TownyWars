@@ -37,5 +37,9 @@ ___
 #### twar.admin - access admin commands
 ___
 
+## About code
+The code is not structured and looks bad, but it works and works well, and this is the most important thing. In future updates, we will improve the code.
+
 ## Join our Discord
+https://discord.gg/Etd4XXH
    
