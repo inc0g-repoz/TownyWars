@@ -36,3 +36,6 @@ ___
 #### twar.mayor - declare a war
 #### twar.admin - access admin commands
 ___
+
+## Join our Discord
+   
