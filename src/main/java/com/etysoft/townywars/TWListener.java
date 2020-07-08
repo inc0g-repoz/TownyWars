@@ -19,6 +19,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
+import java.util.logging.Logger;
+
 public class TWListener implements Listener {
 
     @EventHandler
@@ -143,34 +145,36 @@ public class TWListener implements Listener {
 
             boolean isr1 = WarManager.instance.isInWar(r1.getTown());
 
+
            War war = WarManager.instance.getTownWar(r1.getTown());
+
+
            if(war != null)
            {
                if(war.hasTown(r2.getTown()))
                {
-                   Town tv = war.minus(r2.getTown());
-                   if(tv != null)
-                   {
-                       int nmessage = TownyWars.instance.getConfig().getInt("public-announce-warend");
-                       if(nmessage == 2)
-                       {
-                           Bukkit.broadcastMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
-                       }
-                       else
-                       {
-                           TownyMessaging.sendTownMessagePrefixed(r1.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
-                           TownyMessaging.sendTownMessagePrefixed(r2.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
-                       }
+                   if(war.isASide(r1.getTown()) != war.isASide(r2.getTown())) {
+                       Town tv = war.minus(r2.getTown());
+                       if (tv != null) {
+                           int nmessage = TownyWars.instance.getConfig().getInt("public-announce-warend");
+                           if (nmessage == 2) {
+                               Bukkit.broadcastMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
+                           } else {
+                               TownyMessaging.sendTownMessagePrefixed(r1.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
+                               TownyMessaging.sendTownMessagePrefixed(r2.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
+                           }
 
-                       WarManager.instance.end(war, true);
+                           WarManager.instance.end(war, true);
 
+                       } else {
+                           victim.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-points").replace("%s", war.getAPoints() + "").replace("%k", war.getJPoints() + "")));
+                           attacker.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-points").replace("%s", war.getAPoints() + "").replace("%k", war.getJPoints() + "")));
+                       }
                    }
                    else
                    {
-                       victim.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-points").replace("%s", war.getAPoints() +"").replace("%k", war.getJPoints()+"")));
-                       attacker.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-points").replace("%s", war.getAPoints() +"").replace("%k", war.getJPoints()+"")));
-                   }
 
+                   }
                }
            }
            else
@@ -179,7 +183,9 @@ public class TWListener implements Listener {
            }
 
         } catch (NotRegisteredException ex) {
-            ex.printStackTrace();
+
+        } catch (Exception ex) {
+
         }
 
     }

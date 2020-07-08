@@ -15,15 +15,34 @@ public class War {
     private static Set<Town> asidetowns = new HashSet<Town>();
     private static Set<Town> jsidetowns = new HashSet<Town>();
 
+    private boolean isCreated = false;
+
     public War(Town a, Town j, WarManager warm)
     {
-        apoints = a.getNumResidents();
-        jpoints = j.getNumResidents();
-        attacker = a;
-        jertva = j;
-        wm = warm;
-        wm.addTownToWarList(a);
-        wm.addTownToWarList(j);
+        if(!isCreated) {
+            apoints = a.getNumResidents();
+            jpoints = j.getNumResidents();
+            attacker = a;
+            jertva = j;
+            wm = warm;
+            asidetowns.add(a);
+            jsidetowns.add(j);
+            wm.addTownToWarList(a);
+            wm.addTownToWarList(j);
+            isCreated = true;
+        }
+        else
+        {
+            War w = null;
+            w.getAttacker();
+        }
+
+    }
+
+    public void clear()
+    {
+        asidetowns.clear();
+        jsidetowns.clear();
     }
 
     public boolean isASide(Town t) throws Exception {

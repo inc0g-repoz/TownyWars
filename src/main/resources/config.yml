@@ -40,6 +40,19 @@ msg-lose: "&cLose! &bYour town lose the war and now all your territory has anoth
 msg-points: "&bPoints: &6%s &bvs &6%k"
 msg-money: "You must have %s to do that!"
 
+msg-sendreq: "&aYou successfully send request to join a war"
+msg-sended: "&cThe request has already been sent"
+msg-cancel: "&6Your request was successfully canceled"
+msg-noreq: "&cYou didn't send any requests"
+msg-mayoroffline: "&cMayor is offline!"
+
+msg-accept: "&aYou successfully accepted request to join your war!"
+msg-noreqrec: "&cYou didn't receive request!"
+msg-inwar: "&cThis town already in war!"
+msg-ninwar: "&cYou must be not in war!"
+
+msg-req: "&bTown %s want to be your ally. &6Type &b/twar invite %s&6 to accept request."
+
 #Other
 no-args: "&cWrong arguments. Try to use &b/twar help"
 no-perm: "&cYou do not have permission."
@@ -57,3 +70,4 @@ ht2: "&b/twar n &f- toggle &6neutrality &fof your town"
 ht3: "&b/twar st &f- see &6active wars &flist with points"
 ht4: "&b/twar nlist &f- see &6neutral &ftowns list"
 ht5: "&b/twar reload &f- &6reload &fall config files"
+ht6: "&b/twar joinwar <town> &f- &6join existing war"

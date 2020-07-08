@@ -72,12 +72,12 @@ public class WarManager {
                 Player p = Bukkit.getPlayer(to.getMayor().getName());
 
                 if (p != null) {
-                    p.sendMessage("Town " + from.getName() + " want to be your ally. Type /twar invite " + from.getName());
+                    p.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-req").replace("%s", from.getName())));
                     addreq.put(from, to);
-                    p2.sendMessage("Request has been sended!");
+                    p2.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-sendreq")));
                     return true;
                 } else {
-                    p2.sendMessage("Mayor is not online!");
+                    p2.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-mayoroffline")));
                     return false;
                 }
 
@@ -85,13 +85,13 @@ public class WarManager {
             }
             else
             {
-                p2.sendMessage("You must be neutral");
+                p2.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-ntown")));
                 return false;
             }
         }
         else
         {
-            p2.sendMessage("You must be not in war!");
+            p2.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-ninwar")));
             return false;
         }
     }
@@ -129,16 +129,16 @@ public class WarManager {
             for (Town t : w.getATowns())
             {
                 t.setAdminEnabledPVP(false);
-                townswarlist.remove(t);
+                townswarlist.remove(t.getName());
             }
             for (Town t : w.getJTowns())
             {
                 t.setAdminEnabledPVP(false);
-                townswarlist.remove(t);
+                townswarlist.remove(t.getName());
             }
             w.getAttacker().setAdminEnabledPVP(false);
             w.getJertva().setAdminEnabledPVP(false);
-
+             w.clear();
         }
         else {
             Town proig = w.getZeroPointTown();
@@ -174,17 +174,17 @@ public class WarManager {
 
                 TownyMessaging.sendTownMessage(proig, fun.cstring(TownyWars.instance.getConfig().getString("msg-lose")));
                 TownyMessaging.sendTownMessage(win, fun.cstring(TownyWars.instance.getConfig().getString("msg-win")));
-
+              w.clear();
                 wars.remove(w);
                 for (Town t : w.getATowns())
                 {
                     t.setAdminEnabledPVP(false);
-                    townswarlist.remove(t);
+                    townswarlist.remove(t.getName());
                 }
                 for (Town t : w.getJTowns())
                 {
                     t.setAdminEnabledPVP(false);
-                    townswarlist.remove(t);
+                    townswarlist.remove(t.getName());
                 }
                 if (townswarlist.containsKey(w.getJertva().getName())) {
                     townswarlist.remove(w.getJertva().getName());
@@ -222,6 +222,7 @@ public class WarManager {
 
     public boolean addTownToWar(Town t, War w, boolean isAside)
     {
+        Bukkit.getConsoleSender().sendMessage("Added " + t.getName() + " to war " + w.getAttacker()) ;
         if(!isInWar(t))
         {
             t.setAdminEnabledPVP(true);
@@ -274,6 +275,7 @@ public class WarManager {
 
     public void addTownToWarList(Town t)
     {
+        Bukkit.getConsoleSender().sendMessage("Added " + t.getName() + " to war list");
         townswarlist.put(t.getName(), t);
     }
 

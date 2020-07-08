@@ -236,7 +236,7 @@ public class TWCommands implements CommandExecutor {
                             }
                             else
                             {
-                                sender.sendMessage("Alreay sended! Use /twar canceljw");
+                                sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-sended")));
                             }
                         }
                         catch (Exception e)
@@ -259,12 +259,12 @@ public class TWCommands implements CommandExecutor {
                             Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(p.getName());
                             if(WarManager.getInstance().isSended(r.getTown())) {
                               WarManager.getInstance().removeRequest(r.getTown());
-                              sender.sendMessage("Removed your request!");
+                              sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-cancel")));
 
                             }
                             else
                             {
-                                sender.sendMessage("You have not any requests sended!");
+                                sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-noreq")));
                             }
                         }
                         catch (Exception e)
@@ -297,16 +297,16 @@ public class TWCommands implements CommandExecutor {
                                     }
                                     if (WarManager.getInstance().hasRequest(from, r.getTown())) {
                                         WarManager.getInstance().addTownToWar(from, WarManager.getInstance().getTownWar(r.getTown()), a);
-                                        sender.sendMessage("Accepted!");
+                                        sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-accept")));
                                     }
                                     else
                                     {
-                                        sender.sendMessage("No request!");
+                                        sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-norecrec")));
                                     }
                                 }
                                 else
                                 {
-                                    sender.sendMessage("In war!");
+                                    sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-inwar")));
                                 }
                             }
                             else
@@ -360,7 +360,7 @@ public class TWCommands implements CommandExecutor {
                                                 }
                                             }
                                         } else {
-                                            sender.sendMessage("You must be not in war!");
+                                            sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-ninwar")));
                                         }
                                     } else {
                                         sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-money").replace("%s", TownyWars.instance.getConfig().getDouble("price-neutral") + "")));
@@ -411,7 +411,7 @@ public class TWCommands implements CommandExecutor {
                                 sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
                             }
                         } catch (Exception e) {
-                           sender.sendMessage("Wrong town!");
+                           sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-wrtown")));
                         }
                     }
                 }
