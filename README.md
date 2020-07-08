@@ -4,7 +4,7 @@
 
 ___
 
-A simple plugin that provides arcade wars with your Towny plugin. The author of the plugin is karlov_m. TownyWars is a fairly new plugin, but it is already able to provide simple, and most importantly interesting wars between towns.
+A simple plugin that provides arcade wars with your Towny plugin. The author of the plugin is karlov_m. TownyWars is a fairly new plugin, but it is already able to provide simple, and most importantly interesting wars between towns. Other towns can join the war as allies of one of the parties.
 ___
 
 ## 
@@ -13,7 +13,7 @@ There are neutral towns and non-neutral ones. Only non-neutral cities can declar
 ## Compability with Towny
 | TownyWars version | Towny(tested) | Minecraft Version |
 | ------ | ------ | ----- |
-| *.-1.15 | 0.96.1.0 | 1.15.*
+| *.-1.15 | 0.96.1.0, 0.96.2.0  | 1.15.*
 | *.-1.12 | 0.93.1.0 | 1.12.*
 ## Commands
 
@@ -25,7 +25,9 @@ ___
 #### /twar reload - reload the plugin
 #### /twar help - help command
 #### /twar info - info command
-
+#### /twar joinwar <town> - send request to join war
+#### /twar canceljw - cancel request
+#### /twar invite <town> - accept join-request
 ___
 
 ## Permissions
@@ -37,5 +39,9 @@ ___
 #### twar.admin - access admin commands
 ___
 
+## About code
+The code is not structured and looks bad, but it works and works well, and this is the most important thing. In future updates, we will improve the code.
+
 ## Join our Discord
+https://discord.gg/Etd4XXH
    
