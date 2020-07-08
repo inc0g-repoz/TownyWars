@@ -32,6 +32,10 @@ public class Info {
         p.sendMessage(fun.cstring(pl.getConfig().getString("ht3")));
         p.sendMessage(fun.cstring(pl.getConfig().getString("ht4")));
         p.sendMessage(fun.cstring(pl.getConfig().getString("ht5")));
+        p.sendMessage(fun.cstring(pl.getConfig().getString("ht6")));
+        p.sendMessage(fun.cstring(pl.getConfig().getString("ht7")));
+        p.sendMessage(fun.cstring(pl.getConfig().getString("ht8")));
+        p.sendMessage(fun.cstring(pl.getConfig().getString("ht9")));
 
     }
 }
