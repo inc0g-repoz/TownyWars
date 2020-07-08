@@ -13,7 +13,7 @@ There are neutral towns and non-neutral ones. Only non-neutral cities can declar
 ## Compability with Towny
 | TownyWars version | Towny(tested) | Minecraft Version |
 | ------ | ------ | ----- |
-| *.-1.15 | 0.96.1.0 | 1.15.*
+| *.-1.15 | 0.96.1.0, 0.96.2.0  | 1.15.*
 | *.-1.12 | 0.93.1.0 | 1.12.*
 ## Commands
 
@@ -25,7 +25,9 @@ ___
 #### /twar reload - reload the plugin
 #### /twar help - help command
 #### /twar info - info command
-
+#### /twar joinwar <town> - send request to join war
+#### /twar canceljw - cancel request
+#### /twar invite <town> - accept join-request
 ___
 
 ## Permissions
