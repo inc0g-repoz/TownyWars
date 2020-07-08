@@ -73,10 +73,12 @@ public final class TownyWars extends JavaPlugin {
                     }
                     tabs.add("info");
                     tabs.add("help");
+                    tabs.add("caceljw");
+                    tabs.add("invite");
                 }
                 else
                 {
-                    if(args[0].equals("declare") || args[0].equals("fend"))
+                    if(args[0].equals("declare") || args[0].equals("fend") || args[0].equals("invite"))
                     {
                         List<Town> towns = TownyUniverse.getInstance().getDataSource().getTowns();
                         for(Town t : WarManager.getInstance().getNTowns())
@@ -133,7 +135,7 @@ public final class TownyWars extends JavaPlugin {
            wm = new WarManager();
         Bukkit.getConsoleSender().sendMessage("TownWars " + this.getDescription().getVersion() + " successfully enabled!");
     }
-    private String supported = "0.96.1.0";
+    private String supported = "0.96.1.0, 0.96.2.0";
     public boolean isCompatible(String version)
     {
         return supported.contains(version);

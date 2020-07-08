@@ -68,7 +68,7 @@ public class WarManager {
 
         if(!WarManager.getInstance().isInWar(from) && WarManager.getInstance().isInWar(to)) {
 
-            if(!WarManager.getInstance().isNeutral(from)) {
+            if(!WarManager.getInstance().isNeutral(from) && WarManager.getInstance().getTownWar(to).isSide(to)) {
                 Player p = Bukkit.getPlayer(to.getMayor().getName());
 
                 if (p != null) {
@@ -222,7 +222,6 @@ public class WarManager {
 
     public boolean addTownToWar(Town t, War w, boolean isAside)
     {
-        Bukkit.getConsoleSender().sendMessage("Added " + t.getName() + " to war " + w.getAttacker()) ;
         if(!isInWar(t))
         {
             t.setAdminEnabledPVP(true);
@@ -275,7 +274,6 @@ public class WarManager {
 
     public void addTownToWarList(Town t)
     {
-        Bukkit.getConsoleSender().sendMessage("Added " + t.getName() + " to war list");
         townswarlist.put(t.getName(), t);
     }
 

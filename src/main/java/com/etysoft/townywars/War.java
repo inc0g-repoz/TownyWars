@@ -45,6 +45,19 @@ public class War {
         jsidetowns.clear();
     }
 
+    public boolean isSide(Town t)
+    {
+        if(attacker == t)
+        {
+            return true;
+        }
+        if(jertva == t)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public boolean isASide(Town t) throws Exception {
         if(asidetowns.contains(t))
         {
