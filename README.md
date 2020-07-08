@@ -4,7 +4,7 @@
 
 ___
 
-A simple plugin that provides arcade wars with your Towny plugin. The author of the plugin is karlov_m. TownyWars is a fairly new plugin, but it is already able to provide simple, and most importantly interesting wars between towns.
+A simple plugin that provides arcade wars with your Towny plugin. The author of the plugin is karlov_m. TownyWars is a fairly new plugin, but it is already able to provide simple, and most importantly interesting wars between towns. Other towns can join the war as allies of one of the parties.
 ___
 
 ## 
