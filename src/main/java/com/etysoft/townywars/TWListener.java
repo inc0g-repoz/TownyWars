@@ -1,11 +1,11 @@
 package com.etysoft.townywars;
 
 import com.palmergames.bukkit.towny.TownyMessaging;
-import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.event.*;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Arrow;
@@ -67,8 +67,8 @@ public class TWListener implements Listener {
     {
        if(WarManager.getInstance().isInWar(n.getTown()) && TownyWars.instance.getConfig().getBoolean("block-town-delete"))
        {
-           n.setCancelled(true);
-           n.setCancelMessage("Town in war!");
+
+           Bukkit.getConsoleSender().sendMessage("Can't cancel event: old version!");
 
        }
         else {
@@ -141,8 +141,8 @@ public class TWListener implements Listener {
         Player victim = (Player) edbee.getEntity();
         try {
 
-            Resident r1 =   com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(attacker.getName());
-            Resident r2 =   com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(victim.getName());
+            Resident r1 =   TownyUniverse.getDataSource().getResident(attacker.getName());
+            Resident r2 =   TownyUniverse.getDataSource().getResident(victim.getName());
 
             boolean isr1 = WarManager.instance.isInWar(r1.getTown());
 
