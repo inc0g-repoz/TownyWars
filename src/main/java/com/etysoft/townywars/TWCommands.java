@@ -13,7 +13,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import sun.plugin2.main.server.Plugin;
 
 import javax.security.auth.login.Configuration;
 import java.util.Set;
@@ -212,6 +211,61 @@ public class TWCommands implements CommandExecutor {
                     if(sender.hasPermission("twar.use"))
                     {
                         Info.help(sender, TownyWars.instance);
+                    }
+                    else
+                    {
+                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                    }
+                }
+                else if(args[0].equals("end"))
+                {
+                    if(sender.hasPermission("twar.mayor"))
+                    {
+                        try
+                        {
+                            if(sender instanceof Player) {
+                                Player p = (Player) sender;
+                                Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(p.getName());
+                                if(WarManager.getInstance().getTownWar(r.getTown()) != null)
+                                {
+
+                                    War w = WarManager.getInstance().getTownWar(r.getTown());
+                                    Town tosend = w.getOppositeTown(r.getTown());
+                                    if(w.fromreqtown == tosend)
+                                    {
+                                        TownyMessaging.sendTownMessage(tosend,(fun.cstring(TownyWars.instance.getConfig().getString("msg-ended"))));
+                                        TownyMessaging.sendTownMessage(r.getTown(),(fun.cstring(TownyWars.instance.getConfig().getString("msg-ended"))));
+                                        WarManager.getInstance().end(w, false);
+
+                                        return true;
+                                    }
+                                    Resident mayor = tosend.getMayor();
+                                    if(Bukkit.getPlayer(mayor.getName()) != null)
+                                    {
+                                         w.fromreqtown = r.getTown();
+                                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-sendreqend")));
+                                        Bukkit.getPlayer(mayor.getName()).sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-reqend").replace("%s", r.getTown().getName())));
+                                    }
+                                    else
+                                    {
+                                          sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-mayoroffline")));
+                                    }
+                                }
+                                else
+                                {
+                                    sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-wrtown")));
+                                }
+                            }
+                            else
+                            {
+                                sender.sendMessage("You can't do it from console!");
+
+                            }
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
                     }
                     else
                     {

@@ -56,8 +56,9 @@ public class TWListener implements Listener {
     @EventHandler
     public void nt(NewTownEvent n)
     {
-         WarManager.getInstance().setNeutrality(true, n.getTown());
-
+        if(TownyWars.instance.getConfig().getBoolean("create-neutral")) {
+            WarManager.getInstance().setNeutrality(true, n.getTown());
+        }
 
     }
 

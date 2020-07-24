@@ -11,6 +11,8 @@ public class War {
    private Town jertva;
    private Integer apoints;
    private Integer jpoints;
+
+   public Town fromreqtown = null;
    private WarManager wm;
     private static Set<Town> asidetowns = new HashSet<Town>();
     private static Set<Town> jsidetowns = new HashSet<Town>();
@@ -43,6 +45,19 @@ public class War {
     {
         asidetowns.clear();
         jsidetowns.clear();
+    }
+
+    public Town getOppositeTown(Town side)
+    {
+        if(attacker == side)
+        {
+            return jertva;
+        }
+        if(jertva == side)
+        {
+            return attacker;
+        }
+        return null;
     }
 
     public boolean isSide(Town t)

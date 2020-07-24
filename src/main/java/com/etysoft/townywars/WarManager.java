@@ -11,7 +11,6 @@ import com.palmergames.bukkit.towny.object.TownBlockType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import javax.xml.bind.Marshaller;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -148,9 +147,16 @@ public class WarManager {
 
 
                 if (!TownyWars.instance.getConfig().getBoolean("only-town-delete")) {
-                    List<TownBlock> tbs;
+                    List<TownBlock> tbs = null;
+                    try
+                    {
+                       tbs = new ArrayList<>(proig.getTownBlocks());
+                    }
+                    catch (Exception e)
+                    {
+                        Bukkit.getConsoleSender().sendMessage("Error! Please report this to Discord https://discord.gg/Etd4XXH");
+                    }
 
-                    tbs = proig.getTownBlocks();
                     List<TownBlock> tList = new ArrayList<TownBlock>();
                     tList.addAll(tbs);
 

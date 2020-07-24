@@ -54,6 +54,10 @@ public final class TownyWars extends JavaPlugin {
 
 
         }
+        if(getConfig().getDouble("config-ver") != 1.2)
+        {
+            Bukkit.getConsoleSender().sendMessage("Outdated configuration file!");
+        }
         getServer().getPluginManager().registerEvents(new TWListener(), this);
         instance = this;
         getCommand("townwars").setExecutor(new TWCommands(this));
@@ -68,6 +72,7 @@ public final class TownyWars extends JavaPlugin {
                     tabs.add("st");
                     tabs.add("nlist");
                     tabs.add("joinwar");
+                    tabs.add("end");
                     if(sender.hasPermission("twar.admin"))
                     {
                         tabs.add("reload");
@@ -75,7 +80,7 @@ public final class TownyWars extends JavaPlugin {
                     }
                     tabs.add("info");
                     tabs.add("help");
-                    tabs.add("caceljw");
+                    tabs.add("canceljw");
                     tabs.add("invite");
                 }
                 else

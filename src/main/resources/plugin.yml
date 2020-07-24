@@ -1,5 +1,5 @@
 name: TownyWars
-version: 1.1.4-1.15
+version: 1.2.0-1.15
 main: com.etysoft.townywars.TownyWars
 authors: [karlov_m]
 depend: [Towny]
