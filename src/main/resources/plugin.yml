@@ -1,5 +1,5 @@
 name: TownyWars
-version: 1.2.0-1.15
+version: 1.2.0-1.15-pre-1
 main: com.etysoft.townywars.TownyWars
 authors: [karlov_m]
 depend: [Towny]
@@ -10,15 +10,15 @@ commands:
     usage: /<command>
     aliases: twar
 permissions:
-  townywars.admin:
+  twar.admin:
     default: op
     children:
       aun.info: true
       aun.edittown: true
     description: Allows all commands
-  townywars.use:
+  twar.use:
     default: op
     description: Simple information using
-  townywars.mayor:
+  twar.mayor:
     default: op
     description:  Declare a war and manage it

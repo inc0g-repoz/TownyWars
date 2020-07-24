@@ -18,9 +18,16 @@ public final class TownyWars extends JavaPlugin {
     public Plugin towny;
     public static TownyWars instance;
     public WarManager wm;
+    public boolean isPreRelease = true;
+
     @Override
     public void onEnable() {
         // Plugin startup logic
+        if(isPreRelease)
+        {
+            Bukkit.getConsoleSender().sendMessage("You are using the pre-release of Town wars. If any errors occur, please contact Discord using the link https://discord.gg/Etd4XXH");
+        }
+
         if(getServer().getPluginManager().getPlugin("Towny") == null)
         {
             Bukkit.getConsoleSender().sendMessage("Towny doesn't found. Disabling...");
