@@ -64,9 +64,7 @@ public class DataManager {
             while (line != null) {
 
                      try {
-
                          neutralslist.add(TownyAPI.getInstance().getDataSource().getTown(line));
-                         Bukkit.getConsoleSender().sendMessage("Town with name " + line + " added!");
                      } catch (NotRegisteredException ex) {
                          Bukkit.getConsoleSender().sendMessage("Town with name " + line + " not found!");
                      }

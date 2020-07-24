@@ -54,6 +54,7 @@ public final class TownyWars extends JavaPlugin {
 
 
         }
+        isGood();
         if(getConfig().getDouble("config-ver") != 1.2)
         {
             Bukkit.getConsoleSender().sendMessage("Outdated configuration file!");
@@ -190,5 +191,19 @@ public final class TownyWars extends JavaPlugin {
         // Plugin shutdown logic
         DataManager.saveNeutrals(WarManager.getInstance().getNTowns());
         Bukkit.getConsoleSender().sendMessage("TownWars " + this.getDescription().getVersion() + " successfully disabled!");
+    }
+
+    public boolean isGood()
+    {
+        try
+        {
+            TownyUniverse.getInstance().getDataSource();
+            return true;
+        }
+        catch (Exception e)
+        {
+            Bukkit.getConsoleSender().sendMessage("You are using an incompatible version of TownyWars with your version of Towny! (DataSource)");
+            return false;
+        }
     }
 }
