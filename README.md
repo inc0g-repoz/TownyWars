@@ -44,6 +44,10 @@ ___
 ## About code
 The code is not structured and looks bad, but it works and works well, and this is the most important thing. In future updates, we will improve the code.
 
+## For developers
+Read API
+https://github.com/karlovm/TownyWars/wiki/Developers-API
+
 ## Join our Discord
 https://discord.gg/Etd4XXH
    
