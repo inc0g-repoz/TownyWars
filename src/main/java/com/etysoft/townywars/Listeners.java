@@ -1,27 +1,21 @@
 package com.etysoft.townywars;
 
 import com.palmergames.bukkit.towny.TownyMessaging;
-import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.event.*;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.util.logging.Logger;
-
-public class TWListener implements Listener {
+public class Listeners implements org.bukkit.event.Listener {
 
     @EventHandler
     public void onjoin(PlayerJoinEvent e)
@@ -37,9 +31,9 @@ public class TWListener implements Listener {
     public void onResidentLeave(TownRemoveResidentEvent event) {
       if(WarManager.getInstance().isInWar(event.getTown())) {
           War w = WarManager.getInstance().getTownWar(event.getTown());
-          if (event.getTown() == w.getJertva())
+          if (event.getTown() == w.getVictim())
           {
-              w.minusJ();
+              w.minusV();
 
           }
           else
@@ -76,7 +70,7 @@ public class TWListener implements Listener {
                WarManager.getInstance().setNeutrality(false, n.getTown());
            }
            if (TownyWars.instance.getConfig().getBoolean("trfeatures")) {
-               TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("bye-bye").replace("%s", n.getTown().getName())));
+               TownyMessaging.sendGlobalMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("bye-bye").replace("%s", n.getTown().getName())));
            }
        }
     }
@@ -85,14 +79,14 @@ public class TWListener implements Listener {
     public void onResidentAdd(TownAddResidentEvent event) {
         if(WarManager.getInstance().isInWar(event.getTown())) {
             War w = WarManager.getInstance().getTownWar(event.getTown());
-            if (event.getTown() == w.getJertva())
+            if (event.getTown() == w.getVictim())
             {
                 w.minusA();
 
             }
             else
             {
-                w.minusJ();
+                w.minusV();
             }
 
         }
@@ -144,10 +138,10 @@ public class TWListener implements Listener {
             Resident r1 =   com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(attacker.getName());
             Resident r2 =   com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(victim.getName());
 
-            boolean isr1 = WarManager.instance.isInWar(r1.getTown());
+            boolean isr1 = WarManager.getInstance().isInWar(r1.getTown());
 
 
-           War war = WarManager.instance.getTownWar(r1.getTown());
+           War war = WarManager.getInstance().getTownWar(r1.getTown());
 
 
            if(war != null)
@@ -159,17 +153,17 @@ public class TWListener implements Listener {
                        if (tv != null) {
                            int nmessage = TownyWars.instance.getConfig().getInt("public-announce-warend");
                            if (nmessage == 2) {
-                               Bukkit.broadcastMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
+                               Bukkit.broadcastMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
                            } else {
-                               TownyMessaging.sendTownMessagePrefixed(r1.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
-                               TownyMessaging.sendTownMessagePrefixed(r2.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
+                               TownyMessaging.sendTownMessagePrefixed(r1.getTown(), ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
+                               TownyMessaging.sendTownMessagePrefixed(r2.getTown(), ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-end").replace("%s", tv.getName()).replace("%j", r2.getTown().getName())));
                            }
 
-                           WarManager.instance.end(war, true);
+                           WarManager.getInstance().end(war, true);
 
                        } else {
-                           victim.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-points").replace("%s", war.getAPoints() + "").replace("%k", war.getJPoints() + "")));
-                           attacker.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-points").replace("%s", war.getAPoints() + "").replace("%k", war.getJPoints() + "")));
+                           victim.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-points").replace("%s", war.getAPoints() + "").replace("%k", war.getVPoints() + "")));
+                           attacker.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-points").replace("%s", war.getAPoints() + "").replace("%k", war.getVPoints() + "")));
                        }
                    }
                    else

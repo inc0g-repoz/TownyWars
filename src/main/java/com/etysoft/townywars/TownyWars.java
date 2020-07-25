@@ -1,11 +1,15 @@
 package com.etysoft.townywars;
 
+import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.exceptions.EconomyException;
+import com.palmergames.bukkit.towny.object.EconomyAccount;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,7 +29,7 @@ public final class TownyWars extends JavaPlugin {
         // Plugin startup logic
         if(isPreRelease)
         {
-            Bukkit.getConsoleSender().sendMessage("You are using the pre-release of Town wars. If any errors occur, please contact Discord using the link https://discord.gg/Etd4XXH");
+            Bukkit.getConsoleSender().sendMessage("You are using the pre-release of TownyWars! If any errors occur, please contact Discord using the link https://discord.gg/Etd4XXH");
         }
 
         if(getServer().getPluginManager().getPlugin("Towny") == null)
@@ -66,9 +70,9 @@ public final class TownyWars extends JavaPlugin {
         {
             Bukkit.getConsoleSender().sendMessage("Outdated configuration file!");
         }
-        getServer().getPluginManager().registerEvents(new TWListener(), this);
+        getServer().getPluginManager().registerEvents(new Listeners(), this);
         instance = this;
-        getCommand("townwars").setExecutor(new TWCommands(this));
+        getCommand("townwars").setExecutor(new Commands(this));
         getCommand("townwars").setTabCompleter(new TabCompleter() {
             @Override
             public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
@@ -96,7 +100,7 @@ public final class TownyWars extends JavaPlugin {
                     if(args[0].equals("declare") || args[0].equals("fend") || args[0].equals("invite"))
                     {
                         List<Town> towns = TownyUniverse.getInstance().getDataSource().getTowns();
-                        for(Town t : WarManager.getInstance().getNTowns())
+                        for(Town t : WarManager.getInstance().getNeutralTowns())
                         {
                             towns.remove(t);
                         }
@@ -193,10 +197,15 @@ public final class TownyWars extends JavaPlugin {
         instance.reloadConfig();
     }
 
+
+    public static void callEvent(Event event) {
+        Bukkit.getPluginManager().callEvent(event);
+    }
+
     @Override
     public void onDisable() {
         // Plugin shutdown logic
-        DataManager.saveNeutrals(WarManager.getInstance().getNTowns());
+        DataManager.saveNeutrals(WarManager.getInstance().getNeutralTowns());
         Bukkit.getConsoleSender().sendMessage("TownWars " + this.getDescription().getVersion() + " successfully disabled!");
     }
 

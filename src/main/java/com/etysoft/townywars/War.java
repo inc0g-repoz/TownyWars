@@ -8,29 +8,29 @@ import java.util.Set;
 public class War {
 
    private Town attacker;
-   private Town jertva;
+   private Town victim;
    private Integer apoints;
-   private Integer jpoints;
+   private Integer vpoints;
 
    public Town fromreqtown = null;
    private WarManager wm;
     private static Set<Town> asidetowns = new HashSet<Town>();
-    private static Set<Town> jsidetowns = new HashSet<Town>();
+    private static Set<Town> vsidetowns = new HashSet<Town>();
 
     private boolean isCreated = false;
 
-    public War(Town a, Town j, WarManager warm)
+    public War(Town a, Town v, WarManager warm)
     {
         if(!isCreated) {
             apoints = a.getNumResidents();
-            jpoints = j.getNumResidents();
+            vpoints = v.getNumResidents();
             attacker = a;
-            jertva = j;
+            victim = v;
             wm = warm;
             asidetowns.add(a);
-            jsidetowns.add(j);
+            vsidetowns.add(v);
             wm.addTownToWarList(a);
-            wm.addTownToWarList(j);
+            wm.addTownToWarList(v);
             isCreated = true;
         }
         else
@@ -44,16 +44,17 @@ public class War {
     public void clear()
     {
         asidetowns.clear();
-        jsidetowns.clear();
+        vsidetowns.clear();
+        fromreqtown = null;
     }
 
     public Town getOppositeTown(Town side)
     {
         if(attacker == side)
         {
-            return jertva;
+            return victim;
         }
-        if(jertva == side)
+        if(victim == side)
         {
             return attacker;
         }
@@ -66,7 +67,7 @@ public class War {
         {
             return true;
         }
-        if(jertva == t)
+        if(victim == t)
         {
             return true;
         }
@@ -78,7 +79,7 @@ public class War {
         {
             return true;
         }
-        else if(jsidetowns.contains(t))
+        else if(vsidetowns.contains(t))
         {
             return  false;
         }
@@ -99,19 +100,19 @@ public class War {
         asidetowns.remove(t);
     }
 
-    public void addJTown(Town t)
+    public void addVTown(Town t)
     {
-        jsidetowns.add(t);
+        vsidetowns.add(t);
     }
 
-    public void removeJTown(Town t)
+    public void removeVTown(Town t)
     {
-        jsidetowns.remove(t);
+        vsidetowns.remove(t);
     }
 
-    public  Set<Town> getJTowns()
+    public  Set<Town> getVTowns()
     {
-        return jsidetowns;
+        return vsidetowns;
     }
 
     public  Set<Town> getATowns()
@@ -124,16 +125,16 @@ public class War {
         return  attacker;
     }
 
-    public Town getJertva()
+    public Town getVictim()
     {
-        return  jertva;
+        return victim;
     }
 
     public Town getZeroPointTown()
     {
-        if(jpoints == 0)
+        if(vpoints == 0)
         {
-            return jertva;
+            return victim;
         }
         if(apoints == 0)
         {
@@ -143,13 +144,13 @@ public class War {
     }
     public Town getNotZeroPointTown()
     {
-        if(jpoints == 0)
+        if(vpoints == 0)
         {
             return attacker;
         }
         if(apoints == 0)
         {
-            return jertva;
+            return victim;
         }
         return  null;
     }
@@ -160,19 +161,18 @@ public class War {
         if(t == attacker || asidetowns.contains(t))
         {
             minusA();
-
         }
-        if(t == jertva || jsidetowns.contains(t))
+        if(t == victim || vsidetowns.contains(t))
         {
-            minusJ();
+            minusV();
         }
-        if(jpoints == 0)
+        if(vpoints == 0)
         {
             return attacker;
         }
         if(apoints == 0)
         {
-            return jertva;
+            return victim;
         }
         return  null;
     }
@@ -183,7 +183,7 @@ public class War {
         {
             return  true;
         }
-        if(jertva == t)
+        if(victim == t)
         {
             return  true;
         }
@@ -191,23 +191,23 @@ public class War {
         {
             return true;
         }
-        if(jsidetowns.contains(t))
+        if(vsidetowns.contains(t))
         {
             return true;
         }
         return false;
     }
 
-    public void minusJ()
+    public void minusV()
     {
-        jpoints = jpoints - 1;
+        vpoints = vpoints - 1;
         apoints = apoints + 1;
     }
 
     public void minusA()
     {
         apoints = apoints - 1;
-        jpoints = jpoints + 1;
+        vpoints = vpoints + 1;
     }
 
     public int getAPoints()
@@ -215,8 +215,8 @@ public class War {
         return apoints;
     }
 
-    public int getJPoints()
+    public int getVPoints()
     {
-        return jpoints;
+        return vpoints;
     }
 }

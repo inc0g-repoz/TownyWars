@@ -1,15 +1,14 @@
 package com.etysoft.townywars;
 
-import com.palmergames.bukkit.towny.TownyAPI;
+import com.etysoft.townywars.events.WarDeclareEvent;
+import com.etysoft.townywars.events.WarEndEvent;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownyUniverse;
-import com.palmergames.bukkit.towny.db.TownyDataSource;
-import com.palmergames.bukkit.towny.exceptions.AlreadyRegisteredException;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
-import com.palmergames.bukkit.towny.object.TownBlockType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,13 +19,12 @@ public class WarManager {
     private static Map<String, Town> townswarlist = new ConcurrentHashMap<>();
     private static Map<Town, Town> addreq = new ConcurrentHashMap<>();
     private static Set<War> wars = new HashSet<War>();
-   public static WarManager instance;
+    private static WarManager instance;
 
     public WarManager()
     {
         neutralslist = DataManager.loadNeutrals();
         instance = this;
-
     }
 
     public War getTownWar(Town t)
@@ -40,12 +38,12 @@ public class WarManager {
         return null;
     }
 
-    public boolean isSended(Town from)
+    public boolean isSendedJoinRequest(Town from)
     {
        return  addreq.containsKey(from);
     }
 
-    public boolean hasRequest(Town from, Town to)
+    public boolean hasJoinRequest(Town from, Town to)
     {
         if(addreq.containsKey(from))
         {
@@ -57,12 +55,12 @@ public class WarManager {
         }
     }
 
-    public void removeRequest(Town from)
+    public void removeJoinRequest(Town from)
     {
         addreq.remove(from);
     }
 
-    public boolean sendRequest(Town from, Town to, Player p2)
+    public boolean sendJoinRequest(Town from, Town to, Player pform)
     {
 
         if(!WarManager.getInstance().isInWar(from) && WarManager.getInstance().isInWar(to)) {
@@ -71,12 +69,12 @@ public class WarManager {
                 Player p = Bukkit.getPlayer(to.getMayor().getName());
 
                 if (p != null) {
-                    p.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-req").replace("%s", from.getName())));
+                    p.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-req").replace("%s", from.getName())));
                     addreq.put(from, to);
-                    p2.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-sendreq")));
+                    pform.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-sendreq")));
                     return true;
                 } else {
-                    p2.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-mayoroffline")));
+                    pform.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-mayoroffline")));
                     return false;
                 }
 
@@ -84,18 +82,18 @@ public class WarManager {
             }
             else
             {
-                p2.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-ntown")));
+                pform.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-ntown")));
                 return false;
             }
         }
         else
         {
-            p2.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-ninwar")));
+            pform.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-ninwar")));
             return false;
         }
     }
 
-    public Set<Town> getNTowns()
+    public Set<Town> getNeutralTowns()
     {
         return neutralslist;
     }
@@ -114,95 +112,90 @@ public class WarManager {
 
     public void end(War w, boolean withpain)
     {
-        if(!withpain)
-        {
-            wars.remove(w);
-            if(townswarlist.containsKey(w.getJertva().getName()))
-            {
-                townswarlist.remove(w.getJertva().getName());
-            }
-            if(townswarlist.containsKey(w.getAttacker().getName()))
-            {
-                townswarlist.remove(w.getAttacker().getName());
-            }
-            for (Town t : w.getATowns())
-            {
-                t.setAdminEnabledPVP(false);
-                townswarlist.remove(t.getName());
-            }
-            for (Town t : w.getJTowns())
-            {
-                t.setAdminEnabledPVP(false);
-                townswarlist.remove(t.getName());
-            }
-            w.getAttacker().setAdminEnabledPVP(false);
-            w.getJertva().setAdminEnabledPVP(false);
-             w.clear();
-        }
-        else {
-            Town proig = w.getZeroPointTown();
-            Town win = w.getNotZeroPointTown();
+        WarEndEvent warEndEvent = new WarEndEvent(w);
 
-            if (proig != null) {
+        TownyWars.callEvent(warEndEvent);
 
-
-                if (!TownyWars.instance.getConfig().getBoolean("only-town-delete")) {
-                    List<TownBlock> tbs = null;
-                    try
-                    {
-                       tbs = new ArrayList<>(proig.getTownBlocks());
-                    }
-                    catch (Exception e)
-                    {
-                        Bukkit.getConsoleSender().sendMessage("Error! Please report this to Discord https://discord.gg/Etd4XXH");
-                    }
-
-                    List<TownBlock> tList = new ArrayList<TownBlock>();
-                    tList.addAll(tbs);
-
-
-                    for (TownBlock tb :
-                            tList) {
-                        try {
-
-                            tb.setTown(win);
-
-                            TownyUniverse.getInstance().getDataSource().saveTownBlock(tb);
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                }
-                win.setAdminEnabledPVP(false);
-
-                TownyMessaging.sendTownMessage(proig, fun.cstring(TownyWars.instance.getConfig().getString("msg-lose")));
-                TownyMessaging.sendTownMessage(win, fun.cstring(TownyWars.instance.getConfig().getString("msg-win")));
-              w.clear();
+        if(!warEndEvent.isCancelled()) {
+            if (!withpain) {
                 wars.remove(w);
-                for (Town t : w.getATowns())
-                {
-                    t.setAdminEnabledPVP(false);
-                    townswarlist.remove(t.getName());
-                }
-                for (Town t : w.getJTowns())
-                {
-                    t.setAdminEnabledPVP(false);
-                    townswarlist.remove(t.getName());
-                }
-                if (townswarlist.containsKey(w.getJertva().getName())) {
-                    townswarlist.remove(w.getJertva().getName());
+                if (townswarlist.containsKey(w.getVictim().getName())) {
+                    townswarlist.remove(w.getVictim().getName());
                 }
                 if (townswarlist.containsKey(w.getAttacker().getName())) {
                     townswarlist.remove(w.getAttacker().getName());
                 }
-                TownyUniverse.getInstance().getDataSource().deleteTown(proig);
-                TownyUniverse.getInstance().getDataSource().removeTown(proig);
-
+                for (Town t : w.getATowns()) {
+                    t.setAdminEnabledPVP(false);
+                    townswarlist.remove(t.getName());
+                }
+                for (Town t : w.getVTowns()) {
+                    t.setAdminEnabledPVP(false);
+                    townswarlist.remove(t.getName());
+                }
+                w.getAttacker().setAdminEnabledPVP(false);
+                w.getVictim().setAdminEnabledPVP(false);
+                w.clear();
             } else {
-                Bukkit.getConsoleSender().sendMessage("Proig is null!");
+                Town proig = w.getZeroPointTown();
+                Town win = w.getNotZeroPointTown();
+
+                if (proig != null) {
+
+
+                    if (!TownyWars.instance.getConfig().getBoolean("only-town-delete")) {
+                        List<TownBlock> tbs = null;
+                        try {
+                            tbs = new ArrayList<>(proig.getTownBlocks());
+                        } catch (Exception e) {
+                            Bukkit.getConsoleSender().sendMessage("Error! Please report this to Discord https://discord.gg/Etd4XXH");
+                        }
+
+                        List<TownBlock> tList = new ArrayList<TownBlock>();
+                        tList.addAll(tbs);
+
+
+                        for (TownBlock tb :
+                                tList) {
+                            try {
+
+                                tb.setTown(win);
+
+                                TownyUniverse.getInstance().getDataSource().saveTownBlock(tb);
+
+
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+                    win.setAdminEnabledPVP(false);
+
+                    TownyMessaging.sendPrefixedTownMessage(proig, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-lose")));
+                    TownyMessaging.sendPrefixedTownMessage(win, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-win")));
+                    w.clear();
+                    wars.remove(w);
+                    for (Town t : w.getATowns()) {
+                        t.setAdminEnabledPVP(false);
+                        townswarlist.remove(t.getName());
+                    }
+                    for (Town t : w.getVTowns()) {
+                        t.setAdminEnabledPVP(false);
+                        townswarlist.remove(t.getName());
+                    }
+                    if (townswarlist.containsKey(w.getVictim().getName())) {
+                        townswarlist.remove(w.getVictim().getName());
+                    }
+                    if (townswarlist.containsKey(w.getAttacker().getName())) {
+                        townswarlist.remove(w.getAttacker().getName());
+                    }
+                    TownyUniverse.getInstance().getDataSource().deleteTown(proig);
+                    TownyUniverse.getInstance().getDataSource().removeTown(proig);
+
+                } else {
+                    Bukkit.getConsoleSender().sendMessage("Proig is null!");
+                }
             }
         }
     }
@@ -237,7 +230,7 @@ public class WarManager {
             }
             else
             {
-                w.addJTown(t);
+                w.addVTown(t);
             }
             addTownToWarList(t);
 
@@ -254,18 +247,29 @@ public class WarManager {
     {
        if(a != j) {
            if(!WarManager.getInstance().isInWar(a) && !WarManager.getInstance().isInWar(j)) {
-               a.setAdminEnabledPVP(true);
-               j.setAdminEnabledPVP(true);
-               wars.add(new War(a, j, this));
 
-               if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 2) {
-                   Bukkit.broadcastMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
-               } else if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 1) {
-                   TownyMessaging.sendTownMessagePrefixed(j, fun.cstring(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
-                   TownyMessaging.sendTownMessagePrefixed(a, fun.cstring(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
+               WarDeclareEvent warDeclareEvent = new WarDeclareEvent(a, j);
+               TownyWars.callEvent(warDeclareEvent);
+
+               if(!warDeclareEvent.isCancelled()) {
+
+                   a.setAdminEnabledPVP(true);
+                   j.setAdminEnabledPVP(true);
+                   wars.add(new War(a, j, this));
+
+                   if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 2) {
+                       Bukkit.broadcastMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
+                   } else if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 1) {
+                       TownyMessaging.sendTownMessagePrefixed(j, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
+                       TownyMessaging.sendTownMessagePrefixed(a, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-declare").replace("%s", a.getName()).replace("%j", j.getName())));
+                   }
+
+                   return true;
                }
-
-               return true;
+               else
+               {
+                   return false;
+               }
            }
            else
            {
@@ -277,6 +281,7 @@ public class WarManager {
            return false;
        }
     }
+
 
     public void addTownToWarList(Town t)
     {
@@ -293,8 +298,4 @@ public class WarManager {
        return  neutralslist.contains(t);
     }
 
-    public boolean isNeutral(String name)
-    {
-        return  neutralslist.contains(name);
-    }
 }

@@ -1,10 +1,10 @@
 package com.etysoft.townywars;
 
-import com.palmergames.bukkit.towny.TownyEconomyHandler;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.EconomyException;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.object.EconomyAccount;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
@@ -14,15 +14,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import javax.security.auth.login.Configuration;
 import java.util.Set;
-import java.util.function.Consumer;
 
-public class TWCommands implements CommandExecutor {
+public class Commands implements CommandExecutor {
 
    public static TownyWars instance;
 
-    public TWCommands(TownyWars TownyWars)
+    public Commands(TownyWars TownyWars)
     {
         instance = TownyWars;
     }
@@ -40,7 +38,7 @@ public class TWCommands implements CommandExecutor {
                     }
                     else
                     {
-                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                     }
                 }
                 else if(args[0].equals("reload"))
@@ -49,11 +47,11 @@ public class TWCommands implements CommandExecutor {
                     {
                         instance.reloadConfig();
                         instance.ConfigInit();
-                        sender.sendMessage(fun.cstring("&aSuccessfully reloaded configs!"));
+                        sender.sendMessage(ColorCodes.toColor("&aSuccessfully reloaded configs!"));
                     }
                     else
                     {
-                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                     }
                 }
                 else if(args[0].equals("declare"))
@@ -70,52 +68,49 @@ public class TWCommands implements CommandExecutor {
                                {
                                     if(args.length > 1)
                                     {
-                                        if(r.getTown().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-declare"))
+                                        if(r.getTown().getAccount().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-declare"))
                                         {
-
-
-
-
                                         if( com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().hasTown(args[1])) {
                                             Town tod = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getTown(args[1]);
                                             if (tod != null) {
-                                                if (!WarManager.instance.isNeutral(tod) && !WarManager.instance.isNeutral(r.getTown())) {
+                                                if (!WarManager.getInstance().isNeutral(tod) && !WarManager.getInstance().isNeutral(r.getTown())) {
                                                     if(!WarManager.getInstance().isInWar(r.getTown())) {
-                                                        boolean success = WarManager.instance.declare(r.getTown(), tod);
+                                                        boolean success = WarManager.getInstance().declare(r.getTown(), tod);
 
                                                         if (!success) {
-                                                            p.sendMessage(fun.cstring(instance.getConfig().getString("msg-wrtown")));
+                                                            p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
                                                         } else {
-                                                            r.getTown().pay(TownyWars.instance.getConfig().getDouble("price-declare"), "War declare");
+
+                                                            r.getTown().collect(TownyWars.instance.getConfig().getDouble("price-declare"));
                                                         }
                                                     }
                                                 } else {
-                                                    p.sendMessage(fun.cstring(instance.getConfig().getString("msg-ntown")));
+                                                    p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-ntown")));
                                                 }
                                             } else {
-                                                p.sendMessage(fun.cstring(instance.getConfig().getString("msg-wrtown")));
+                                                p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
                                             }
                                         }
                                         else
                                         {
-                                            sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-tde")));
+                                            sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-tde")));
                                         }
                                         }
                                         else
                                         {
-                                            p.sendMessage(fun.cstring(instance.getConfig().getString("msg-money").replace("%s", TownyWars.instance.getConfig().getDouble("price-declare") + "")));
+                                            p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-money").replace("%s", TownyWars.instance.getConfig().getDouble("price-declare") + "")));
 
                                         }
                                     }
                                     else
                                     {
-                                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-args")));
+                                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-args")));
                                     }
 
                                }
                                else
                                {
-                                      p.sendMessage(fun.cstring(instance.getConfig().getString("msg-notown")));
+                                      p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-notown")));
                                }
                            } catch (NotRegisteredException | EconomyException e) {
                                e.printStackTrace();
@@ -128,12 +123,12 @@ public class TWCommands implements CommandExecutor {
                     }
                     else
                     {
-                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                     }
                 }
                 else if(args[0].equals("st"))
                 {
-                    if(WarManager.instance.getWars().size() > 0) {
+                    if(WarManager.getInstance().getWars().size() > 0) {
                         if(args.length > 1)
                         {
                             FileConfiguration c = instance.getConfig();
@@ -142,7 +137,7 @@ public class TWCommands implements CommandExecutor {
                                 {
 
                                  War w = WarManager.getInstance().getTownWar(TownyUniverse.getInstance().getDataSource().getTown(args[1]));
-                                 sender.sendMessage(fun.cstring(c.getString("msg-warin1").replace("%s", args[1])));
+                                 sender.sendMessage(ColorCodes.toColor(c.getString("msg-warin1").replace("%s", args[1])));
 
                                  String am = "";
                                     String jm = "";
@@ -151,37 +146,37 @@ public class TWCommands implements CommandExecutor {
                                         am = am + t.getName() + "; ";
                                     }
                                     for (Town t:
-                                            w.getJTowns()) {
+                                            w.getVTowns()) {
                                         jm = jm + t.getName() + "; ";
                                     }
-                                    sender.sendMessage(fun.cstring(c.getString("msg-warin2").replace("%s", w.getAttacker().getName()) + am));
-                                    sender.sendMessage(fun.cstring(c.getString("msg-warin2").replace("%s", w.getJertva().getName()) + jm));
-                                    sender.sendMessage(fun.cstring(c.getString("msg-warin3").replace("%s", w.getAttacker().getName()).replace("%k", w.getAPoints() + "").replace("%j", w.getJertva().getName()).replace("%y", w.getJPoints() + "")));
+                                    sender.sendMessage(ColorCodes.toColor(c.getString("msg-warin2").replace("%s", w.getAttacker().getName()) + am));
+                                    sender.sendMessage(ColorCodes.toColor(c.getString("msg-warin2").replace("%s", w.getVictim().getName()) + jm));
+                                    sender.sendMessage(ColorCodes.toColor(c.getString("msg-warin3").replace("%s", w.getAttacker().getName()).replace("%k", w.getAPoints() + "").replace("%j", w.getVictim().getName()).replace("%y", w.getVPoints() + "")));
                                 }
                                 else
                                 {
-                                    sender.sendMessage(fun.cstring(c.getString("msg-peace")));
+                                    sender.sendMessage(ColorCodes.toColor(c.getString("msg-peace")));
                                 }
                             } catch (NotRegisteredException e) {
-                                sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-notown")));
+                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-notown")));
                             }
                         }
                         else {
-                            sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-war")));
+                            sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-war")));
                             for (War w :
-                                    WarManager.instance.getWars()) {
+                                    WarManager.getInstance().getWars()) {
                                 String members = "";
                                 if (w.getATowns().size() != 0 && w.getATowns().size() != 0) {
                                     int m = w.getATowns().size() + w.getATowns().size();
                                     members = "+ " + m;
                                 }
-                                sender.sendMessage(fun.cstring("&e" + w.getAttacker().getName() + "&f(&b" + w.getAPoints() + ") VS " + "&e" + w.getJertva().getName() + "&f(&b" + w.getJPoints() + ")" + members));
+                                sender.sendMessage(ColorCodes.toColor("&e" + w.getAttacker().getName() + "&f(&b" + w.getAPoints() + ") VS " + "&e" + w.getVictim().getName() + "&f(&b" + w.getVPoints() + ")" + members));
                             }
                         }
                     }
                     else
                     {
-                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-warde")));
+                        sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-warde")));
                     }
                 }
                 else if(args[0].equals("fend"))
@@ -194,7 +189,7 @@ public class TWCommands implements CommandExecutor {
                                Town t = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
                                War w = WarManager.getInstance().getTownWar(t);
                                WarManager.getInstance().end(w, false);
-                               sender.sendMessage("War " + w.getJertva() + " VS " + w.getAttacker() + " stopped without pain ;)");
+                               sender.sendMessage("War " + w.getVictim() + " VS " + w.getAttacker() + " stopped without pain ;)");
                            } catch (NotRegisteredException e) {
                                sender.sendMessage("Not registered!");
                            }
@@ -203,7 +198,7 @@ public class TWCommands implements CommandExecutor {
                    }
                    else
                    {
-                       sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                       sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                    }
                 }
                 else if(args[0].equals("help"))
@@ -214,7 +209,7 @@ public class TWCommands implements CommandExecutor {
                     }
                     else
                     {
-                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                     }
                 }
                 else if(args[0].equals("end"))
@@ -233,8 +228,8 @@ public class TWCommands implements CommandExecutor {
                                     Town tosend = w.getOppositeTown(r.getTown());
                                     if(w.fromreqtown == tosend)
                                     {
-                                        TownyMessaging.sendTownMessage(tosend,(fun.cstring(TownyWars.instance.getConfig().getString("msg-ended"))));
-                                        TownyMessaging.sendTownMessage(r.getTown(),(fun.cstring(TownyWars.instance.getConfig().getString("msg-ended"))));
+                                        TownyMessaging.sendTownMessagePrefixed(tosend,(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-ended"))));
+                                        TownyMessaging.sendTownMessagePrefixed(r.getTown(),(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-ended"))));
                                         WarManager.getInstance().end(w, false);
 
                                         return true;
@@ -243,17 +238,17 @@ public class TWCommands implements CommandExecutor {
                                     if(Bukkit.getPlayer(mayor.getName()) != null)
                                     {
                                          w.fromreqtown = r.getTown();
-                                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-sendreqend")));
-                                        Bukkit.getPlayer(mayor.getName()).sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-reqend").replace("%s", r.getTown().getName())));
+                                        sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-sendreqend")));
+                                        Bukkit.getPlayer(mayor.getName()).sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-reqend").replace("%s", r.getTown().getName())));
                                     }
                                     else
                                     {
-                                          sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-mayoroffline")));
+                                          sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-mayoroffline")));
                                     }
                                 }
                                 else
                                 {
-                                    sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-wrtown")));
+                                    sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
                                 }
                             }
                             else
@@ -269,7 +264,7 @@ public class TWCommands implements CommandExecutor {
                     }
                     else
                     {
-                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                     }
                 }
                 else if(args[0].equals("joinwar"))
@@ -280,17 +275,17 @@ public class TWCommands implements CommandExecutor {
 
                         try {
                             Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(p.getName());
-                            if(!WarManager.getInstance().isSended(r.getTown())) {
+                            if(!WarManager.getInstance().isSendedJoinRequest(r.getTown())) {
                                 if (args.length > 1) {
                                     Town t = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
-                                    WarManager.getInstance().sendRequest(r.getTown(), t, p);
+                                    WarManager.getInstance().sendJoinRequest(r.getTown(), t, p);
                                 } else {
-                                    sender.sendMessage(fun.cstring(instance.getConfig().getString("no-args")));
+                                    sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-args")));
                                 }
                             }
                             else
                             {
-                                sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-sended")));
+                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-sended")));
                             }
                         }
                         catch (Exception e)
@@ -300,7 +295,7 @@ public class TWCommands implements CommandExecutor {
                     }
                     else
                     {
-                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                     }
                 }
                 else if(args[0].equals("canceljw"))
@@ -311,14 +306,14 @@ public class TWCommands implements CommandExecutor {
 
                         try {
                             Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(p.getName());
-                            if(WarManager.getInstance().isSended(r.getTown())) {
-                              WarManager.getInstance().removeRequest(r.getTown());
-                              sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-cancel")));
+                            if(WarManager.getInstance().isSendedJoinRequest(r.getTown())) {
+                              WarManager.getInstance().removeJoinRequest(r.getTown());
+                              sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-cancel")));
 
                             }
                             else
                             {
-                                sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-noreq")));
+                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-noreq")));
                             }
                         }
                         catch (Exception e)
@@ -328,7 +323,7 @@ public class TWCommands implements CommandExecutor {
                     }
                     else
                     {
-                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                     }
                 }
                 else if(args[0].equals("invite"))
@@ -349,33 +344,33 @@ public class TWCommands implements CommandExecutor {
                                     {
                                         a = true;
                                     }
-                                    if (WarManager.getInstance().hasRequest(from, r.getTown())) {
+                                    if (WarManager.getInstance().hasJoinRequest(from, r.getTown())) {
                                         WarManager.getInstance().addTownToWar(from, WarManager.getInstance().getTownWar(r.getTown()), a);
-                                        sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-accept")));
+                                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-accept")));
                                     }
                                     else
                                     {
-                                        sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-norecrec")));
+                                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-norecrec")));
                                     }
                                 }
                                 else
                                 {
-                                    sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-inwar")));
+                                    sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-inwar")));
                                 }
                             }
                             else
                             {
-                                sender.sendMessage(fun.cstring(instance.getConfig().getString("no-args")));
+                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-args")));
                             }
                         }
                         catch (Exception e)
                         {
-                            sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-notown")));
+                            sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-notown")));
                         }
                     }
                     else
                     {
-                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                     }
                 }
                 else if(args[0].equals("n"))
@@ -387,41 +382,41 @@ public class TWCommands implements CommandExecutor {
                                     Resident r = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(sender.getName());
                                     if (r.hasTown()) {
                                         if (!WarManager.getInstance().isInWar(r.getTown())) {
-                                            if (r.getTown().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-neutral")) {
+                                            if (r.getTown().getAccount().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-neutral")) {
                                                 int nmessage = TownyWars.instance.getConfig().getInt("public-announce-neutral");
                                                 if (WarManager.getInstance().isNeutral(r.getTown())) {
-                                                    r.getTown().pay(TownyWars.instance.getConfig().getDouble("price-neutral"), "Neutrality toggle");
+                                                    r.getTown().collect(TownyWars.instance.getConfig().getDouble("price-neutral"));
                                                     WarManager.getInstance().setNeutrality(false, r.getTown());
 
                                                     if (nmessage == 3) {
-                                                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
+                                                        sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
                                                     } else if (nmessage == 1) {
-                                                        TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
+                                                        TownyMessaging.sendTownMessagePrefixed(r.getTown(), ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
                                                     } else if (nmessage == 2) {
-                                                        TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
+                                                        TownyMessaging.sendGlobalMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", r.getTown().getName())));
                                                     }
 
                                                 } else {
                                                     WarManager.getInstance().setNeutrality(true, r.getTown());
                                                     if (nmessage == 3) {
-                                                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
+                                                        sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
                                                     } else if (nmessage == 1) {
-                                                        TownyMessaging.sendTownMessagePrefixed(r.getTown(), fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
+                                                        TownyMessaging.sendTownMessagePrefixed(r.getTown(), ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
                                                     } else if (nmessage == 2) {
-                                                        TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
+                                                        TownyMessaging.sendGlobalMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
                                                     }
 
                                                 }
                                             }
                                             else
                                             {
-                                                sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-money").replace("%s", TownyWars.instance.getConfig().getDouble("price-neutral") + "")));
+                                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-money").replace("%s", TownyWars.instance.getConfig().getDouble("price-neutral") + "")));
                                             }
                                         } else {
-                                            sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-ninwar")));
+                                            sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-ninwar")));
                                         }
                                     } else {
-                                        sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-money").replace("%s", TownyWars.instance.getConfig().getDouble("price-neutral") + "")));
+                                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-money").replace("%s", TownyWars.instance.getConfig().getDouble("price-neutral") + "")));
                                     }
                                 } catch (Exception e) {
                                     Bukkit.getConsoleSender().sendMessage("TOWNYWARS CATCH AN ERROR:");
@@ -429,7 +424,7 @@ public class TWCommands implements CommandExecutor {
                                     Bukkit.getConsoleSender().sendMessage("ERROR IN NEUTRALITY TOGGLE");
                                 }
                             } else {
-                                sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                             }
                         } else {
                             sender.sendMessage("You can't do it from Console!");
@@ -445,31 +440,31 @@ public class TWCommands implements CommandExecutor {
                                     WarManager.getInstance().setNeutrality(false, t);
 
                                     if (nmessage == 3) {
-                                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", t.getName())));
+                                        sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", t.getName())));
                                     } else if (nmessage == 1) {
-                                        TownyMessaging.sendTownMessagePrefixed(t, fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", t.getName())));
+                                        TownyMessaging.sendTownMessagePrefixed(t, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", t.getName())));
                                     } else if (nmessage == 2) {
-                                        TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", t.getName())));
+                                        TownyMessaging.sendGlobalMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-noff").replace("%s", t.getName())));
                                     }
 
                                 } else {
                                     WarManager.getInstance().setNeutrality(true, t);
                                     if (nmessage == 3) {
-                                        sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", t.getName())));
+                                        sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-non").replace("%s", t.getName())));
                                     } else if (nmessage == 1) {
-                                        TownyMessaging.sendTownMessagePrefixed(t, fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", t.getName())));
+                                        TownyMessaging.sendTownMessagePrefixed(t, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-non").replace("%s", t.getName())));
                                     } else if (nmessage == 2) {
-                                        TownyMessaging.sendGlobalMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-non").replace("%s", t.getName())));
+                                        TownyMessaging.sendGlobalMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-non").replace("%s", t.getName())));
                                     }
 
                                 }
                             }
                             else
                             {
-                                sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                             }
                         } catch (Exception e) {
-                           sender.sendMessage(fun.cstring(instance.getConfig().getString("msg-wrtown")));
+                           sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
                         }
                     }
                 }
@@ -481,7 +476,7 @@ public class TWCommands implements CommandExecutor {
 
 
                         String list = "";
-                        Set<Town> ts = WarManager.instance.getNTowns();
+                        Set<Town> ts = WarManager.getInstance().getNeutralTowns();
                         if(ts.size() > 0) {
                             Boolean isfirst = true;
                             for (Town t :
@@ -495,27 +490,27 @@ public class TWCommands implements CommandExecutor {
 
 
                             }
-                            sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-nlist")));
-                            sender.sendMessage(fun.cstring(list));
+                            sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-nlist")));
+                            sender.sendMessage(ColorCodes.toColor(list));
                         }
                         else
                         {
-                            sender.sendMessage(fun.cstring(TownyWars.instance.getConfig().getString("msg-listde")));
+                            sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-listde")));
                         }
                     }
                     else
                     {
-                        sender.sendMessage(fun.cstring(instance.getConfig().getString("no-perm")));
+                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                     }
                 }
                 else
                 {
-                    sender.sendMessage(fun.cstring(instance.getConfig().getString("no-args")));
+                    sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-args")));
                 }
             }
             else
             {
-                sender.sendMessage(fun.cstring(instance.getConfig().getString("no-args")));
+                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-args")));
             }
 
             return true;

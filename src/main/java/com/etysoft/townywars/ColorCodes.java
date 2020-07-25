@@ -2,9 +2,9 @@ package com.etysoft.townywars;
 
 import org.bukkit.ChatColor;
 
-public class fun
+public class ColorCodes
 {
-    public static String cstring(String text)
+    public static String toColor(String text)
     {
         try
         {
