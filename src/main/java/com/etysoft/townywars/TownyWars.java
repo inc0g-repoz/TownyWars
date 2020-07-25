@@ -209,7 +209,7 @@ public final class TownyWars extends JavaPlugin {
         }
         catch (Exception e)
         {
-            Bukkit.getConsoleSender().sendMessage("You are using an incompatible version of TownyWars with your version of Towny! (DataSource)");
+            Bukkit.getConsoleSender().sendMessage("You are using an incompatible version of TownyWars with your version of Towny! (DataSource, old Towny version)");
             return false;
         }
     }
