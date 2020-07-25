@@ -27,6 +27,7 @@ ___
 #### /twar help - help command
 #### /twar info - info command
 #### /twar joinwar <town> - send request to join war
+#### /twar end - send request to end war
 #### /twar canceljw - cancel request
 #### /twar invite <town> - accept join-request
 ___
