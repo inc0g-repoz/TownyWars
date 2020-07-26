@@ -1,9 +1,6 @@
 package com.etysoft.townywars;
 
-import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownyUniverse;
-import com.palmergames.bukkit.towny.exceptions.EconomyException;
-import com.palmergames.bukkit.towny.object.EconomyAccount;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -66,7 +63,7 @@ public final class TownyWars extends JavaPlugin {
 
         }
         isGood();
-        if(getConfig().getDouble("config-ver") != 1.2)
+        if (getConfig().getDouble("config-ver") != 1.3)
         {
             Bukkit.getConsoleSender().sendMessage("Outdated configuration file!");
         }

@@ -8,7 +8,6 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownBlock;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -137,64 +136,85 @@ public class WarManager {
                 w.getVictim().setAdminEnabledPVP(false);
                 w.clear();
             } else {
+                String action = TownyWars.instance.getConfig().getString("lost-action");
                 Town proig = w.getZeroPointTown();
                 Town win = w.getNotZeroPointTown();
-
-                if (proig != null) {
-
-
-                    if (!TownyWars.instance.getConfig().getBoolean("only-town-delete")) {
-                        List<TownBlock> tbs = null;
-                        try {
-                            tbs = new ArrayList<>(proig.getTownBlocks());
-                        } catch (Exception e) {
-                            Bukkit.getConsoleSender().sendMessage("Error! Please report this to Discord https://discord.gg/Etd4XXH");
-                        }
-
-                        List<TownBlock> tList = new ArrayList<TownBlock>();
-                        tList.addAll(tbs);
+                if (action.equals("delete")) {
 
 
-                        for (TownBlock tb :
-                                tList) {
+                    if (proig != null) {
+
+
+                        if (!TownyWars.instance.getConfig().getBoolean("only-town-delete")) {
+                            List<TownBlock> tbs = null;
                             try {
-
-                                tb.setTown(win);
-
-                                TownyUniverse.getInstance().getDataSource().saveTownBlock(tb);
-
-
+                                tbs = new ArrayList<>(proig.getTownBlocks());
                             } catch (Exception e) {
-                                e.printStackTrace();
+                                Bukkit.getConsoleSender().sendMessage("Error! Please report this to Discord https://discord.gg/Etd4XXH");
                             }
+
+                            List<TownBlock> tList = new ArrayList<TownBlock>();
+                            tList.addAll(tbs);
+
+
+                            for (TownBlock tb :
+                                    tList) {
+                                try {
+
+                                    tb.setTown(win);
+
+                                    TownyUniverse.getInstance().getDataSource().saveTownBlock(tb);
+
+
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
                         }
+                        win.setAdminEnabledPVP(false);
+
+                        TownyMessaging.sendPrefixedTownMessage(proig, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-lose")));
+                        TownyMessaging.sendPrefixedTownMessage(win, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-win")));
+                        w.clear();
+                        wars.remove(w);
+                        for (Town t : w.getATowns()) {
+                            t.setAdminEnabledPVP(false);
+                            townswarlist.remove(t.getName());
+                        }
+                        for (Town t : w.getVTowns()) {
+                            t.setAdminEnabledPVP(false);
+                            townswarlist.remove(t.getName());
+                        }
+                        if (townswarlist.containsKey(w.getVictim().getName())) {
+                            townswarlist.remove(w.getVictim().getName());
+                        }
+                        if (townswarlist.containsKey(w.getAttacker().getName())) {
+                            townswarlist.remove(w.getAttacker().getName());
+                        }
+                        TownyUniverse.getInstance().getDataSource().deleteTown(proig);
+                        TownyUniverse.getInstance().getDataSource().removeTown(proig);
+
+                    } else {
+                        Bukkit.getConsoleSender().sendMessage("Proig is null!");
+                    }
+                } else if (action.equals("steal")) {
+                    try {
+                        win.getAccount().deposit(proig.getAccount().getHoldingBalance(), "War end");
+                    } catch (Exception e) {
+                        Bukkit.getConsoleSender().sendMessage("[TownyWars] Error stealing bank:");
+                        e.printStackTrace();
+                    }
+                } else if (action.equals("prize")) {
+                    try {
+                        win.getAccount().deposit(TownyWars.instance.getConfig().getDouble("prize"), "War end");
+                    } catch (Exception e) {
+                        Bukkit.getConsoleSender().sendMessage("[TownyWars] Error depositing prize:");
+                        e.printStackTrace();
 
                     }
-                    win.setAdminEnabledPVP(false);
-
-                    TownyMessaging.sendPrefixedTownMessage(proig, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-lose")));
-                    TownyMessaging.sendPrefixedTownMessage(win, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-win")));
-                    w.clear();
-                    wars.remove(w);
-                    for (Town t : w.getATowns()) {
-                        t.setAdminEnabledPVP(false);
-                        townswarlist.remove(t.getName());
-                    }
-                    for (Town t : w.getVTowns()) {
-                        t.setAdminEnabledPVP(false);
-                        townswarlist.remove(t.getName());
-                    }
-                    if (townswarlist.containsKey(w.getVictim().getName())) {
-                        townswarlist.remove(w.getVictim().getName());
-                    }
-                    if (townswarlist.containsKey(w.getAttacker().getName())) {
-                        townswarlist.remove(w.getAttacker().getName());
-                    }
-                    TownyUniverse.getInstance().getDataSource().deleteTown(proig);
-                    TownyUniverse.getInstance().getDataSource().removeTown(proig);
-
                 } else {
-                    Bukkit.getConsoleSender().sendMessage("Proig is null!");
+                    Bukkit.getConsoleSender().sendMessage("Can't find end action! (delete, prize or steal) Is config.yml is outdated?");
                 }
             }
         }
