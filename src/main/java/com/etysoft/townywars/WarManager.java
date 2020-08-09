@@ -200,14 +200,14 @@ public class WarManager {
                     }
                 } else if (action.equals("steal")) {
                     try {
-                        win.getAccount().deposit(proig.getAccount().getHoldingBalance(), "War end");
+                        win.getAccount().setBalance(win.getAccount().getHoldingBalance() + proig.getAccount().getHoldingBalance(), "War end");
                     } catch (Exception e) {
                         Bukkit.getConsoleSender().sendMessage("[TownyWars] Error stealing bank:");
                         e.printStackTrace();
                     }
                 } else if (action.equals("prize")) {
                     try {
-                        win.getAccount().deposit(TownyWars.instance.getConfig().getDouble("prize"), "War end");
+                        win.getAccount().setBalance(win.getAccount().getHoldingBalance() + TownyWars.instance.getConfig().getDouble("prize"), "War end");
                     } catch (Exception e) {
                         Bukkit.getConsoleSender().sendMessage("[TownyWars] Error depositing prize:");
                         e.printStackTrace();

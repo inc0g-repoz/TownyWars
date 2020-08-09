@@ -21,6 +21,59 @@ public final class TownyWars extends JavaPlugin {
     public WarManager wm;
     public boolean isPreRelease = true;
 
+    private String supported = "0.96.2.0";
+
+    public static void callEvent(Event event) {
+        if (event == null) {
+            Bukkit.getConsoleSender().sendMessage("Event is null!");
+            return;
+        }
+        if (Bukkit.getPluginManager() == null) {
+            Bukkit.getConsoleSender().sendMessage("Event is null!");
+            return;
+        }
+        Bukkit.getPluginManager().callEvent(event);
+    }
+
+    public boolean isCompatible(String version) {
+        return supported.contains(version);
+    }
+
+
+    public void ConfigInit() {
+        getConfig().addDefault("msg-compatible", "&aCompatible with current Towny version");
+        getConfig().addDefault("msg-nocompatible", "&cWasn't tested with Towny %s");
+        getConfig().addDefault("msg-declare", "&b%s &cdeclared war on &6%j!");
+        getConfig().addDefault("msg-end", "&b%s &cwin war on &6%j!");
+        getConfig().addDefault("msg-notown", "&cYou don't belong to a town!");
+        getConfig().addDefault("msg-wrtown", "&cWrong town!");
+        getConfig().addDefault("msg-ntown", "&cNeutral town can't be in war!");
+        getConfig().addDefault("msg-wrtown", "&cWrong town!");
+        getConfig().addDefault("msg-war", "&bCurrent wars: ");
+        getConfig().addDefault("msg-nlist", "&aNeutral towns: ");
+        getConfig().addDefault("msg-non", "&cNow your town no longer neutral");
+        getConfig().addDefault("msg-noff", "&aNow your town is neutral");
+        getConfig().addDefault("msg-listde", "&cNo neutral towns!");
+        getConfig().addDefault("msg-warde", "&cNo active wars!");
+        getConfig().addDefault("msg-tde", "&aTown doesn't exists!");
+
+        getConfig().addDefault("public-announce-neutral", 2);
+        getConfig().addDefault("public-announce-warstart", 2);
+        getConfig().addDefault("public-announce-warend", 2);
+
+        getConfig().addDefault("no-args", "&cWrong arguments.");
+        getConfig().addDefault("no-args", "&cWrong arguments.");
+
+        getConfig().addDefault("msg-win", "&aWinner! &bYour town win the war and now you have all territory of loser town!");
+        getConfig().addDefault("msg-lose", "&cLose! &bYour town lose the war and now all your territory has another town!");
+
+        getConfig().addDefault("trfeatures", true);
+        getConfig().addDefault("only-town-delete", false);
+        getConfig().addDefault("bye-bye", "&6Пока-пока, &b%s.&6 F.");
+        saveDefaultConfig();
+        instance.reloadConfig();
+    }
+
     @Override
     public void onEnable() {
         // Plugin startup logic
@@ -86,6 +139,7 @@ public final class TownyWars extends JavaPlugin {
                     {
                         tabs.add("reload");
                         tabs.add("fend");
+                        tabs.add("fdeclare");
                     }
                     tabs.add("info");
                     tabs.add("help");
@@ -105,8 +159,7 @@ public final class TownyWars extends JavaPlugin {
                         {
                             tabs.add(t.getName());
                         }
-                    }
-                    else if(args[0].equals("n") || args[0].equals("st") || args[0].equals("joinwar"))
+                    } else if (args[0].equals("n") || args[0].equals("st") || args[0].equals("joinwar") || args[0].equals("fdeclare"))
                     {
                         List<Town> towns = TownyUniverse.getInstance().getDataSource().getTowns();
 
@@ -131,6 +184,10 @@ public final class TownyWars extends JavaPlugin {
 
                             finals.add(s);
                         }
+                    } else if (args.length == 3) {
+                        if (args[0].equals("fdeclare")) {
+                            finals.add(s);
+                        }
                     }
                 }
 
@@ -150,53 +207,6 @@ public final class TownyWars extends JavaPlugin {
         ConfigInit();
            wm = new WarManager();
         Bukkit.getConsoleSender().sendMessage("TownWars " + this.getDescription().getVersion() + " successfully enabled!");
-    }
-    private String supported = "0.96.1.0, 0.96.2.0";
-    public boolean isCompatible(String version)
-    {
-        return supported.contains(version);
-    }
-
-
-
-    public void ConfigInit()
-    {
-        getConfig().addDefault("msg-compatible", "&aCompatible with current Towny version");
-        getConfig().addDefault("msg-nocompatible", "&cWasn't tested with Towny %s");
-        getConfig().addDefault("msg-declare", "&b%s &cdeclared war on &6%j!");
-        getConfig().addDefault("msg-end", "&b%s &cwin war on &6%j!");
-        getConfig().addDefault("msg-notown", "&cYou don't belong to a town!");
-        getConfig().addDefault("msg-wrtown", "&cWrong town!");
-        getConfig().addDefault("msg-ntown", "&cNeutral town can't be in war!");
-        getConfig().addDefault("msg-wrtown", "&cWrong town!");
-        getConfig().addDefault("msg-war", "&bCurrent wars: ");
-        getConfig().addDefault("msg-nlist", "&aNeutral towns: ");
-        getConfig().addDefault("msg-non", "&cNow your town no longer neutral");
-        getConfig().addDefault("msg-noff", "&aNow your town is neutral");
-        getConfig().addDefault("msg-listde", "&cNo neutral towns!");
-        getConfig().addDefault("msg-warde", "&cNo active wars!");
-        getConfig().addDefault("msg-tde", "&aTown doesn't exists!");
-
-        getConfig().addDefault("public-announce-neutral", 2);
-        getConfig().addDefault("public-announce-warstart", 2);
-        getConfig().addDefault("public-announce-warend", 2);
-
-        getConfig().addDefault("no-args", "&cWrong arguments.");
-        getConfig().addDefault("no-args", "&cWrong arguments.");
-
-        getConfig().addDefault("msg-win", "&aWinner! &bYour town win the war and now you have all territory of loser town!");
-        getConfig().addDefault("msg-lose", "&cLose! &bYour town lose the war and now all your territory has another town!");
-
-        getConfig().addDefault("trfeatures", true);
-        getConfig().addDefault("only-town-delete", false);
-        getConfig().addDefault("bye-bye", "&6Пока-пока, &b%s.&6 F.");
-        saveDefaultConfig();
-        instance.reloadConfig();
-    }
-
-
-    public static void callEvent(Event event) {
-        Bukkit.getPluginManager().callEvent(event);
     }
 
     @Override

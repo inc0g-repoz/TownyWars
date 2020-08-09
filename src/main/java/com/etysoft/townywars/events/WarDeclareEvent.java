@@ -27,9 +27,10 @@ public class WarDeclareEvent extends Event  implements Cancellable {
         return victim;
     }
 
+    private static final HandlerList HANDLERS = new HandlerList();
     @Override
     public HandlerList getHandlers() {
-        return null;
+        return HANDLERS;
     }
 
     @Override
