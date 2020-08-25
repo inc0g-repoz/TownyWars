@@ -1,6 +1,7 @@
 package com.etysoft.townywars;
 
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.exceptions.EconomyException;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -114,13 +115,7 @@ public final class TownyWars extends JavaPlugin {
               Bukkit.getConsoleSender().sendMessage("TownyWars can't enable Towny(is it already enabled?)");
           }
 
-            try {
-                Town t = new Town("test");
-                t.getAccount().getHoldingBalance();
-            } catch (Exception e) {
-                Bukkit.getConsoleSender().sendMessage("Old Towny economy (Use latest version of Towny)! Disabling TownyWars...");
 
-            }
         }
         isGood();
         if (getConfig().getDouble("config-ver") != 1.3)
@@ -213,6 +208,14 @@ public final class TownyWars extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("Initializing config.yml...");
         ConfigInit();
            wm = new WarManager();
+
+        try {
+            Town t = new Town("test");
+            t.getAccount().getHoldingBalance();
+        } catch (NoSuchMethodError | EconomyException e) {
+            Bukkit.getConsoleSender().sendMessage("Old Towny economy (Use latest version of Towny)! Disabling TownyWars...");
+            Bukkit.getPluginManager().disablePlugin(this);
+        }
         Bukkit.getConsoleSender().sendMessage("TownWars " + this.getDescription().getVersion() + " successfully enabled!");
     }
 
