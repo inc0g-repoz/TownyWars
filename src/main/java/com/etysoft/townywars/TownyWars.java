@@ -19,17 +19,17 @@ public final class TownyWars extends JavaPlugin {
     public Plugin towny;
     public static TownyWars instance;
     public WarManager wm;
-    public boolean isPreRelease = true;
+    public boolean isPreRelease = false;
 
-    private String supported = "0.96.2.0";
+    private String supported = "0.96.2.13";
 
     public static void callEvent(Event event) {
         if (event == null) {
-            Bukkit.getConsoleSender().sendMessage("Event is null!");
+            Bukkit.getConsoleSender().sendMessage("TownyWars error: Event is null!");
             return;
         }
         if (Bukkit.getPluginManager() == null) {
-            Bukkit.getConsoleSender().sendMessage("Event is null!");
+            Bukkit.getConsoleSender().sendMessage("TownyWars error: pm is null!");
             return;
         }
         Bukkit.getPluginManager().callEvent(event);
@@ -82,9 +82,10 @@ public final class TownyWars extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage("You are using the pre-release of TownyWars! If any errors occur, please contact Discord using the link https://discord.gg/Etd4XXH");
         }
 
+
         if(getServer().getPluginManager().getPlugin("Towny") == null)
         {
-            Bukkit.getConsoleSender().sendMessage("Towny doesn't found. Disabling...");
+            Bukkit.getConsoleSender().sendMessage("Towny not found. Disabling...");
             Bukkit.getPluginManager().disablePlugin(this);
         }
         else
@@ -113,7 +114,13 @@ public final class TownyWars extends JavaPlugin {
               Bukkit.getConsoleSender().sendMessage("TownyWars can't enable Towny(is it already enabled?)");
           }
 
+            try {
+                Town t = new Town("test");
+                t.getAccount().getHoldingBalance();
+            } catch (Exception e) {
+                Bukkit.getConsoleSender().sendMessage("Old Towny economy (Use latest version of Towny)! Disabling TownyWars...");
 
+            }
         }
         isGood();
         if (getConfig().getDouble("config-ver") != 1.3)

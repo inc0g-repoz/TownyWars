@@ -1,7 +1,10 @@
 package com.etysoft.townywars;
 
 import com.palmergames.bukkit.towny.TownyMessaging;
-import com.palmergames.bukkit.towny.event.*;
+import com.palmergames.bukkit.towny.event.NewTownEvent;
+import com.palmergames.bukkit.towny.event.PreDeleteTownEvent;
+import com.palmergames.bukkit.towny.event.TownAddResidentEvent;
+import com.palmergames.bukkit.towny.event.TownRemoveResidentEvent;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -22,7 +25,10 @@ public class Listeners implements org.bukkit.event.Listener {
     {
         if(e.getPlayer().hasPermission("twar.admin"))
         {
-            e.getPlayer().sendMessage("TownyWars " + TownyWars.instance.getDescription().getVersion() + " working!");
+            if (TownyWars.instance.isPreRelease) {
+                e.getPlayer().sendMessage("PreRelease of TownyWars " + TownyWars.instance.getDescription().getVersion() + "! Thanks for testing!");
+            }
+
         }
 
     }
