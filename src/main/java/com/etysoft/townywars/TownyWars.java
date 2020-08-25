@@ -213,7 +213,7 @@ public final class TownyWars extends JavaPlugin {
             Town t = new Town("test");
             t.getAccount().getHoldingBalance();
         } catch (NoSuchMethodError | EconomyException e) {
-            Bukkit.getConsoleSender().sendMessage("Old Towny economy (Use latest version of Towny)! Disabling TownyWars...");
+            Bukkit.getConsoleSender().sendMessage("[CRITICAL ERROR]: Old Towny economy (Use latest version of Towny)! Disabling TownyWars...");
             Bukkit.getPluginManager().disablePlugin(this);
         }
         Bukkit.getConsoleSender().sendMessage("TownWars " + this.getDescription().getVersion() + " successfully enabled!");
