@@ -31,13 +31,14 @@ ___
 #### /twar end - send request to end war
 #### /twar canceljw - cancel request
 #### /twar invite <town> - accept join-request
+#### /twar fdeclare <town_attacker> <town_victim> - admin command, declare a war without neutrality check
 ___
 
 ## Permissions
 
 ___
 
-#### twar.use - simple use /twar info, /twar help and /twar st
+#### twar.use - simple use /twar info, /twar help and /twar st and more
 #### twar.mayor - declare a war
 #### twar.admin - access admin commands
 ___
