@@ -136,7 +136,7 @@ public class WarManager {
                 w.getVictim().setAdminEnabledPVP(false);
                 w.clear();
             } else {
-                String action = TownyWars.instance.getConfig().getString("lost-action");
+                String action = TownyWars.instance.getConfig().getString("lose-action");
                 Town proig = w.getZeroPointTown();
                 Town win = w.getNotZeroPointTown();
                 if (action.equals("delete")) {
@@ -200,7 +200,13 @@ public class WarManager {
                     }
                 } else if (action.equals("steal")) {
                     try {
-                        win.getAccount().setBalance(win.getAccount().getHoldingBalance() + proig.getAccount().getHoldingBalance(), "War end");
+                        if (proig.getAccount().getHoldingBalance() > 1) {
+                            win.getAccount().setBalance(win.getAccount().getHoldingBalance() + proig.getAccount().getHoldingBalance(), "War end");
+                            proig.getAccount().setBalance(0, "War steal");
+                        } else if (TownyWars.instance.getConfig().getBoolean("delete-if-cant-steal")) {
+                            TownyUniverse.getInstance().getDataSource().deleteTown(proig);
+                            TownyUniverse.getInstance().getDataSource().removeTown(proig);
+                        }
                     } catch (Exception e) {
                         Bukkit.getConsoleSender().sendMessage("[TownyWars] Error stealing bank:");
                         e.printStackTrace();
@@ -211,7 +217,6 @@ public class WarManager {
                     } catch (Exception e) {
                         Bukkit.getConsoleSender().sendMessage("[TownyWars] Error depositing prize:");
                         e.printStackTrace();
-
                     }
                 } else {
                     Bukkit.getConsoleSender().sendMessage("Can't find end action! (delete, prize or steal) Is config.yml is outdated?");

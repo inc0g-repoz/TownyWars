@@ -25,8 +25,14 @@ create-neutral: true
 lose-action: "delete"
 prize: 200.0
 
+# Delete looser town if balance =< 1
+delete-if-cant-steal: true
+
 # Only delete looser town without adding its chunks to winner
 only-town-delete: false
+
+# The mayor of the city under attack must be online
+mayor-online: true
 
 msg-declare: "&f[&aTowny&6Wars&f] &b%s &cdeclared war on &6%j!"
 msg-end: "&f[&aTowny&6Wars&f] &b%s &cwin war on &6%j!"
@@ -40,6 +46,7 @@ msg-noff: "&f[&aTowny&6Wars&f] &bNow town &6%s&b is no longer neutral!"
 msg-listde: "&f[&aTowny&6Wars&f] &cNo neutral towns!"
 msg-warde: "&f[&aTowny&6Wars&f] &cNo active wars!"
 msg-tde: "&f[&aTowny&6Wars&f] &aTown doesn't exists!"
+msg-online: "&f[&aTowny&6Wars&f] &aMayor must be online!"
 msg-win: "&f[&aTowny&6Wars&f] &aWin! &bYour town win the war!"
 msg-lose: "&f[&aTowny&6Wars&f] &cLose! &bYour town lose the war!"
 msg-points: "&f[&aTowny&6Wars&f] &bPoints: &6%s &bvs &6%k"
@@ -83,4 +90,4 @@ ht7: "&b/twar canceljw &f- &6cancel join war request"
 ht8: "&b/twar st <town> &f- see &6information &fabout war"
 ht9: "&b/twar invite <town> &f- accept &6join-war request"
 
-config-ver: 1.3
+config-ver: 1.4

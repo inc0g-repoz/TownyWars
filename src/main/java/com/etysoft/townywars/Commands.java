@@ -56,26 +56,30 @@ public class Commands implements CommandExecutor {
                                             if (r.getTown().getAccount().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-declare")) {
                                                 if (com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().hasTown(args[1])) {
                                                     Town tod = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getTown(args[1]);
-                                                    if (tod != null) {
-                                                        if (!WarManager.getInstance().isNeutral(tod) && !WarManager.getInstance().isNeutral(r.getTown())) {
-                                                            if (!WarManager.getInstance().isInWar(r.getTown())) {
-                                                                boolean success = WarManager.getInstance().declare(r.getTown(), tod);
+                                                    if (Bukkit.getPlayer(tod.getMayor().getName()).isOnline() | !TownyWars.instance.getConfig().getBoolean("mayor-online")) {
+                                                        if (tod != null) {
+                                                            if (!WarManager.getInstance().isNeutral(tod) && !WarManager.getInstance().isNeutral(r.getTown())) {
+                                                                if (!WarManager.getInstance().isInWar(r.getTown())) {
+                                                                    boolean success = WarManager.getInstance().declare(r.getTown(), tod);
 
-                                                                if (!success) {
-                                                                    p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
-                                                                } else {
+                                                                    if (!success) {
+                                                                        p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
+                                                                    } else {
 
-                                                                    r.getTown().getAccount().pay(TownyWars.instance.getConfig().getDouble("price-declare"), "War declaration");
+                                                                        r.getTown().getAccount().pay(TownyWars.instance.getConfig().getDouble("price-declare"), "War declaration");
+                                                                    }
                                                                 }
+                                                            } else {
+                                                                p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-ntown")));
                                                             }
                                                         } else {
-                                                            p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-ntown")));
+                                                            p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
                                                         }
                                                     } else {
-                                                        p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
+
                                                     }
                                                 } else {
-                                                    sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-tde")));
+                                                    sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-online")));
                                                 }
                                             } else {
                                                 p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-money").replace("%s", TownyWars.instance.getConfig().getDouble("price-declare") + "")));

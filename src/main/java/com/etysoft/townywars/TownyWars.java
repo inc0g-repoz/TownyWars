@@ -118,7 +118,7 @@ public final class TownyWars extends JavaPlugin {
 
         }
         isGood();
-        if (getConfig().getDouble("config-ver") != 1.3)
+        if (getConfig().getDouble("config-ver") != 1.4)
         {
             Bukkit.getConsoleSender().sendMessage("Outdated configuration file!");
         }
@@ -216,6 +216,8 @@ public final class TownyWars extends JavaPlugin {
         } catch (NoSuchMethodError | EconomyException e) {
             Bukkit.getConsoleSender().sendMessage("[CRITICAL ERROR]: Old Towny economy (Use latest version of Towny)! Disabling TownyWars...");
             Bukkit.getPluginManager().disablePlugin(this);
+        } catch (Exception e) {
+
         }
 
     }
