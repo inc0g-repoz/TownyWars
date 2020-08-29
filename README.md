@@ -13,8 +13,8 @@ There are neutral towns and non-neutral ones. Only non-neutral cities can declar
 ## Compability with Towny
 | TownyWars version | Towny(tested) | Minecraft Version |
 | ------ | ------ | ----- |
-| 1.3.0 | 0.96.2.0+  | 1.15.*, 1.16.*, 1.12.*, 1.14.*
-| 1.2.0 | 0.96.2.0+  | 1.15.*, 1.16.*, 1.12.*, 1.14.*
+| 1.3.0 | 0.96.2.1+  | 1.15.*, 1.16.*, 1.12.*, 1.14.*
+| 1.2.0 | 0.96.2.1+  | 1.15.*, 1.16.*, 1.12.*, 1.14.*
 | 1.1.*.-1.15 | 0.96.1.0, 0.96.2.0  | 1.15.*, 1.16.*
 | 1.1*.-1.12 | 0.93.1.0 | 1.12.*
 ## Commands
@@ -31,13 +31,14 @@ ___
 #### /twar end - send request to end war
 #### /twar canceljw - cancel request
 #### /twar invite <town> - accept join-request
+#### /twar fdeclare <town_attacker> <town_victim> - admin command, declare a war without neutrality check
 ___
 
 ## Permissions
 
 ___
 
-#### twar.use - simple use /twar info, /twar help and /twar st
+#### twar.use - simple use /twar info, /twar help and /twar st and more
 #### twar.mayor - declare a war
 #### twar.admin - access admin commands
 ___
