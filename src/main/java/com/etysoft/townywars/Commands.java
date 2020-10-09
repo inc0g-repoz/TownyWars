@@ -309,7 +309,6 @@ public class Commands implements CommandExecutor {
                                                 if (r.getTown().getAccount().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-neutral")) {
                                                     int nmessage = TownyWars.instance.getConfig().getInt("public-announce-neutral");
                                                     if (WarManager.getInstance().isNeutral(r.getTown())) {
-                                                        r.getTown().getAccount().withdraw(TownyWars.instance.getConfig().getDouble("price-neutral"), "Neutrality cost");
                                                         WarManager.getInstance().setNeutrality(false, r.getTown());
 
                                                         if (nmessage == 3) {
@@ -322,6 +321,7 @@ public class Commands implements CommandExecutor {
 
                                                     } else {
                                                         WarManager.getInstance().setNeutrality(true, r.getTown());
+                                                        r.getTown().getAccount().withdraw(TownyWars.instance.getConfig().getDouble("price-neutral"), "Neutrality cost");
                                                         if (nmessage == 3) {
                                                             sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-non").replace("%s", r.getTown().getName())));
                                                         } else if (nmessage == 1) {
