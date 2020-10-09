@@ -159,7 +159,7 @@ public class WarManager {
                     }
                 } else if (action.equals("steal")) {
                     try {
-                        if (proig.getAccount().getHoldingBalance() > 1) {
+                        if (proig.getAccount().getHoldingBalance() >= 1) {
                             win.getAccount().setBalance(win.getAccount().getHoldingBalance() + proig.getAccount().getHoldingBalance(), "War end");
                             proig.getAccount().setBalance(0, "War steal");
                         } else if (TownyWars.instance.getConfig().getBoolean("delete-if-cant-steal")) {
