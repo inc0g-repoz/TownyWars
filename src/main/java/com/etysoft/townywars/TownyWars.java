@@ -6,19 +6,15 @@ import com.palmergames.bukkit.towny.object.Town;
 import github.scarsz.discordsrv.DiscordSRV;
 import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import org.bukkit.Bukkit;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public final class TownyWars extends JavaPlugin {
-
-
     public Plugin towny;
     public static TownyWars instance;
     public WarManager wm;
@@ -31,17 +27,18 @@ public final class TownyWars extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage("TownyWars error: Event is null!");
             return;
         }
+
         if (Bukkit.getPluginManager() == null) {
             Bukkit.getConsoleSender().sendMessage("TownyWars error: pm is null!");
             return;
         }
+
         Bukkit.getPluginManager().callEvent(event);
     }
 
     public boolean isCompatible(String version) {
         return supported.contains(version);
     }
-
 
     public void ConfigInit() {
         getConfig().addDefault("msg-compatible", "&aCompatible with current Towny version");
@@ -74,142 +71,116 @@ public final class TownyWars extends JavaPlugin {
         getConfig().addDefault("only-town-delete", false);
         getConfig().addDefault("bye-bye", "&6Пока-пока, &b%s.&6 F.");
         saveDefaultConfig();
-        instance.reloadConfig();
+        reloadConfig();
     }
 
     @Override
     public void onEnable() {
         // Plugin startup logic
-        if(isPreRelease)
-        {
+        if(isPreRelease) {
             Bukkit.getConsoleSender().sendMessage("You are using the pre-release of TownyWars! If any errors occur, please contact Discord using the link https://discord.gg/Etd4XXH");
         }
 
-
-        if(getServer().getPluginManager().getPlugin("Towny") == null)
-        {
+        if(getServer().getPluginManager().getPlugin("Towny") == null) {
             Bukkit.getConsoleSender().sendMessage("Towny not found. Disabling...");
             Bukkit.getPluginManager().disablePlugin(this);
-        }
-        else
-        {
-            towny =  getServer().getPluginManager().getPlugin("Towny");
-
-            Bukkit.getConsoleSender().sendMessage("Using Towny " +  towny.getDescription().getVersion());
-            if(isCompatible(towny.getDescription().getVersion()))
-            {
+        } else {
+            towny = getServer().getPluginManager().getPlugin("Towny");
+            Bukkit.getConsoleSender().sendMessage("Using Towny " + towny.getDescription().getVersion());
+            if(isCompatible(towny.getDescription().getVersion())) {
                 Bukkit.getConsoleSender().sendMessage("Towny version was tested with plugin.");
-            }
-            else
-            {
+            } else {
                 Bukkit.getConsoleSender().sendMessage("Towny version wasn't tested with TownyWars!");
             }
 
             // Deprecated, will be removed in future updates
             try {
                 Bukkit.getConsoleSender().sendMessage("Initializing Towny plugin before WarManager started for correct data...");
-                getServer().getPluginManager().enablePlugin(getServer().getPluginManager().getPlugin("Towny"));
+                getServer().getPluginManager().enablePlugin(Objects.requireNonNull(getServer().getPluginManager().getPlugin("Towny")));
 
                 Bukkit.getConsoleSender().sendMessage("TownyWars was successfully enabled Towny");
             }
-          catch (Exception e)
-          {
+          catch (Exception e) {
               Bukkit.getConsoleSender().sendMessage("TownyWars can't enable Towny(is it already enabled?)");
           }
-
-
         }
+
         isGood();
-        if (getConfig().getDouble("config-ver") != 1.4)
-        {
+        if (getConfig().getDouble("config-ver") != 1.4) {
             Bukkit.getConsoleSender().sendMessage("Outdated configuration file!");
         }
+
         getServer().getPluginManager().registerEvents(new Listeners(), this);
         instance = this;
-        getCommand("townwars").setExecutor(new Commands(this));
-        getCommand("townwars").setTabCompleter(new TabCompleter() {
-            @Override
-            public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
-                List<String> tabs = new ArrayList<>();
-                if(args.length == 1)
-                {
-                    tabs.add("declare");
-                    tabs.add("n");
-                    tabs.add("st");
-                    tabs.add("nlist");
-                    tabs.add("joinwar");
-                    tabs.add("end");
-                    if(sender.hasPermission("twar.admin"))
-                    {
-                        tabs.add("reload");
-                        tabs.add("fend");
-                        tabs.add("fdeclare");
-                    }
-                    tabs.add("info");
-                    tabs.add("help");
-                    tabs.add("canceljw");
-                    tabs.add("invite");
-                }
-                else
-                {
-                    if(args[0].equals("declare") || args[0].equals("fend") || args[0].equals("invite"))
-                    {
-                        List<Town> towns = TownyUniverse.getInstance().getDataSource().getTowns();
-                        for(Town t : WarManager.getInstance().getNeutralTowns())
-                        {
-                            towns.remove(t);
-                        }
-                        for(Town t : towns)
-                        {
-                            tabs.add(t.getName());
-                        }
-                    } else if (args[0].equals("n") || args[0].equals("st") || args[0].equals("joinwar") || args[0].equals("fdeclare"))
-                    {
-                        List<Town> towns = TownyUniverse.getInstance().getDataSource().getTowns();
-
-                        for(Town t : towns)
-                        {
-                            tabs.add(t.getName());
-                        }
-                    }
-                }
-                List<String> finals = new ArrayList<>();
-
-                for(String s : tabs)
-                {
-                    if(args.length == 1) {
-                        if (s.contains(args[0])) {
-                            finals.add(s);
-                        }
-                    }
-                    else if(args.length == 2)
-                    {
-                        if (s.contains(args[1])) {
-
-                            finals.add(s);
-                        }
-                    } else if (args.length == 3) {
-                        if (args[0].equals("fdeclare")) {
-                            finals.add(s);
-                        }
-                    }
+        Objects.requireNonNull(getCommand("townwars")).setExecutor(new Commands(this));
+        Objects.requireNonNull(getCommand("townwars")).setTabCompleter((sender, command, alias, args) -> {
+            List<String> tabs = new ArrayList<>();
+            if(args.length == 1) {
+                tabs.add("declare");
+                tabs.add("n");
+                tabs.add("st");
+                tabs.add("nlist");
+                tabs.add("joinwar");
+                tabs.add("end");
+                if(sender.hasPermission("twar.admin")) {
+                    tabs.add("reload");
+                    tabs.add("fend");
+                    tabs.add("fdeclare");
                 }
 
-                return finals;
+                tabs.add("info");
+                tabs.add("help");
+                tabs.add("canceljw");
+                tabs.add("invite");
+            } else {
+                if(args[0].equals("declare") || args[0].equals("fend") || args[0].equals("invite")) {
+                    List<Town> towns = TownyUniverse.getInstance().getDataSource().getTowns();
+                    for(Town t : WarManager.getInstance().getNeutralTowns()) {
+                        towns.remove(t);
+                    }
+
+                    for(Town t : towns) {
+                        tabs.add(t.getName());
+                    }
+                } else if (args[0].equals("n") || args[0].equals("st") || args[0].equals("joinwar") || args[0].equals("fdeclare")) {
+                    List<Town> towns = TownyUniverse.getInstance().getDataSource().getTowns();
+                    for(Town t : towns) {
+                        tabs.add(t.getName());
+                    }
+                }
             }
+
+            List<String> finals = new ArrayList<>();
+            for(String s : tabs) {
+                if(args.length == 1) {
+                    if (s.contains(args[0])) {
+                        finals.add(s);
+                    }
+                } else if(args.length == 2) {
+                    if (s.contains(args[1])) {
+                        finals.add(s);
+                    }
+                } else if (args.length == 3) {
+                    if (args[0].equals("fdeclare")) {
+                        finals.add(s);
+                    }
+                }
+            }
+
+            return finals;
         });
+
         Bukkit.getConsoleSender().sendMessage("Initializing bStats metrics...");
         try {
             int pluginId = 7801; // <-- Replace with the id of your plugin!
-            Metrics metrics = new Metrics(this, pluginId);
-        }
-        catch (Exception e)
-        {
+            new Metrics(this, pluginId);
+        } catch (Exception e) {
             Bukkit.getConsoleSender().sendMessage("Can't initialize metrics!");
         }
+
         Bukkit.getConsoleSender().sendMessage("Initializing config.yml...");
         ConfigInit();
-           wm = new WarManager();
+        wm = new WarManager();
 
         try {
             Town t = new Town("test");
@@ -218,9 +189,7 @@ public final class TownyWars extends JavaPlugin {
         } catch (NoSuchMethodError | EconomyException e) {
             Bukkit.getConsoleSender().sendMessage("[CRITICAL ERROR]: Old Towny economy (Use latest version of Towny)! Disabling TownyWars...");
             Bukkit.getPluginManager().disablePlugin(this);
-        } catch (Exception e) {
-
-        }
+        } catch (Exception ignored) { }
 
         discord = getConfig().getBoolean("activate-discord");
     }
@@ -232,17 +201,11 @@ public final class TownyWars extends JavaPlugin {
         Bukkit.getConsoleSender().sendMessage("TownWars " + this.getDescription().getVersion() + " successfully disabled!");
     }
 
-    public boolean isGood()
-    {
-        try
-        {
+    public void isGood() {
+        try {
             TownyUniverse.getInstance().getDataSource();
-            return true;
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             Bukkit.getConsoleSender().sendMessage("You are using an incompatible version of TownyWars with your version of Towny! (DataSource, old Towny version)");
-            return false;
         }
     }
 

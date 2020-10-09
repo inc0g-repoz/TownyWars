@@ -1,58 +1,38 @@
 package com.etysoft.townywars;
 
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Town;
 import org.bukkit.Bukkit;
 
 import java.io.*;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class DataManager {
-
-    public static void saveNeutrals(Set<Town> neutralslist)
-    {
+    public static void saveNeutrals(Set<Town> neutralslist) {
         Bukkit.getConsoleSender().sendMessage("Saving neutrals.dat...");
         File file = new File(TownyWars.instance.getDataFolder(), "neutrals.dat");
-
-        BufferedWriter bf = null;;
-
-        try{
-
-            //create new BufferedWriter for the output file
-            bf = new BufferedWriter( new FileWriter(file) );
-
+        try (BufferedWriter bf = new BufferedWriter(new FileWriter(file))) {
             //iterate map entries
-            for(Town t : neutralslist){
-
+            for (Town t : neutralslist) {
                 //put key and value separated by a colon
                 bf.write(t.getName());
-
                 //new line
                 bf.newLine();
             }
 
             bf.flush();
-
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             Bukkit.getConsoleSender().sendMessage("ERROR SAVING NEUTRAL TOWNS!");
-        }finally{
-
-            try{
-                //always close the writer
-                bf.close();
-            }catch(Exception e){}
         }
+        //always close the writer
     }
 
-    public static Set<Town> loadNeutrals()
-    {
+    public static Set<Town> loadNeutrals() {
         Bukkit.getConsoleSender().sendMessage("Loading neutrals file...");
-        Set<Town> neutralslist = new HashSet<Town>();
+        Set<Town> neutralslist = new HashSet<>();
         try {
             File file = new File(TownyWars.instance.getDataFolder(), "neutrals.dat");
             //создаем объект FileReader для объекта File
@@ -62,14 +42,11 @@ public class DataManager {
             // считаем сначала первую строку
             String line = reader.readLine();
             while (line != null) {
-
                      try {
                          neutralslist.add(TownyAPI.getInstance().getDataSource().getTown(line));
                      } catch (NotRegisteredException ex) {
                          Bukkit.getConsoleSender().sendMessage("Town with name " + line + " not found!");
                      }
-
-
 
                 // считываем остальные строки в цикле
                 line = reader.readLine();
@@ -81,5 +58,4 @@ public class DataManager {
         }
         return neutralslist;
     }
-
 }

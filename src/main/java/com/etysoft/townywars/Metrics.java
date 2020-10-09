@@ -86,6 +86,7 @@ public class Metrics {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null!");
         }
+
         this.plugin = plugin;
         this.pluginId = pluginId;
 
@@ -96,7 +97,6 @@ public class Metrics {
 
         // Check if the config file exists
         if (!config.isSet("serverUuid")) {
-
             // Add default values
             config.addDefault("enabled", true);
             // Every server gets it's unique random id.

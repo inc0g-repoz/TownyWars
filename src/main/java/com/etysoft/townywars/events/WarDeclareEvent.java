@@ -6,25 +6,13 @@ import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 
 public class WarDeclareEvent extends Event  implements Cancellable {
-
     private Town attaker;
     private Town victim;
     private boolean canceled = false;
 
-    public WarDeclareEvent(Town attaker, Town victim)
-    {
+    public WarDeclareEvent(Town attaker, Town victim) {
         this.attaker = attaker;
         this.victim = victim;
-    }
-
-    public Town getAttaker()
-    {
-        return attaker;
-    }
-
-    public Town getVictim()
-    {
-        return victim;
     }
 
     private static final HandlerList HANDLERS = new HandlerList();
