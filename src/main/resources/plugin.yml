@@ -1,8 +1,13 @@
 name: TownyWars
 version: 1.4.0
 main: com.etysoft.townywars.TownyWars
-authors: [karlov_m]
-depend: [Towny]
+authors:
+  - karlov_m
+  - ImNotYourDev
+depend:
+  - Towny
+softdepend:
+  - DiscordSRV
 description: A simple arcade plugin for wars with Towny.
 commands:
   townwars:

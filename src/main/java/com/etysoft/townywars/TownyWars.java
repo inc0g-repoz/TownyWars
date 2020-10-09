@@ -3,6 +3,8 @@ package com.etysoft.townywars;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.EconomyException;
 import com.palmergames.bukkit.towny.object.Town;
+import github.scarsz.discordsrv.DiscordSRV;
+import github.scarsz.discordsrv.dependencies.jda.api.entities.TextChannel;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -21,8 +23,8 @@ public final class TownyWars extends JavaPlugin {
     public static TownyWars instance;
     public WarManager wm;
     public boolean isPreRelease = false;
-
-    private String supported = "0.96.2.13";
+    private String supported = "0.96.2.19";
+    public boolean discord;
 
     public static void callEvent(Event event) {
         if (event == null) {
@@ -220,6 +222,7 @@ public final class TownyWars extends JavaPlugin {
 
         }
 
+        discord = getConfig().getBoolean("activate-discord");
     }
 
     @Override
@@ -241,5 +244,11 @@ public final class TownyWars extends JavaPlugin {
             Bukkit.getConsoleSender().sendMessage("You are using an incompatible version of TownyWars with your version of Towny! (DataSource, old Towny version)");
             return false;
         }
+    }
+
+    public void sendDiscord(String message) {
+        TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(getConfig().getString("channel-name"));
+        String prefix = getConfig().getString("message-prefix");
+        textChannel.sendMessage(prefix + message).queue();
     }
 }

@@ -10,8 +10,18 @@ msg-warin2: "&bSide &6%s &btowns: &e"
 msg-warin3: "&aPoints: &b%s &7(%k) &fVS &b%j &7(%y)"
 msg-peace: "&cThat town hasn't war!"
 
-#Wars
+#Discord
+activate-discord: false
+channel-name: "wars"
+message-prefix: "__**Wars**__ »"
+message-end-win: ":trophy: **%winner%** won against **%loser%**!"
+message-end-lose: ":skull_crossbones: **%loser%** lost against **%winner%**!"
+message-neutral: ":peace: **%town%** is now neutral!"
+message-noneutral: ":x: **%town%** is no longer neutral!"
+message-join-war: ":heavy_plus_sign: **%town%** joined war against **%victim%**!"
+message-war-declare: ":crossed_swords: **%attacker%** declared war against **%victim%**!"
 
+#Wars
 #Set "2" for town and global announce, "1" for only town and "0" to no announce.
 public-announce-neutral: 2 # "3" option is only command sender (only in neutrals)
 public-announce-warstart: 2
