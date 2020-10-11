@@ -27,6 +27,10 @@ public class Listeners implements org.bukkit.event.Listener {
             if (TownyWars.instance.isPreRelease) {
                 e.getPlayer().sendMessage("PreRelease of TownyWars " + TownyWars.instance.getDescription().getVersion() + "! Thanks for testing!");
             }
+
+            if (!TownyWars.latestVersion.equals(TownyWars.instance.getDescription().getVersion())) {
+                e.getPlayer().sendMessage("New version of TownyWars is available to download (" + TownyWars.latestVersion + ")");
+            }
         }
     }
 

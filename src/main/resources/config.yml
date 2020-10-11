@@ -1,4 +1,7 @@
-# TownyWars 1.3 configuration file
+#############################################
+######            TownyWars            ######
+######             v.1.5.0             ######
+#############################################
 
 # TRANSLATIONS (%s is a placeholder for version, name etc.)
 
@@ -100,4 +103,4 @@ ht7: "&b/twar canceljw &f- &6cancel join war request"
 ht8: "&b/twar st <town> &f- see &6information &fabout war"
 ht9: "&b/twar invite <town> &f- accept &6join-war request"
 
-config-ver: 1.4
+config-ver: 1.5

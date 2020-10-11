@@ -10,6 +10,11 @@ import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,6 +26,7 @@ public final class TownyWars extends JavaPlugin {
     public boolean isPreRelease = false;
     private String supported = "0.96.2.19";
     public boolean discord;
+    public static String latestVersion;
 
     public static void callEvent(Event event) {
         if (event == null) {
@@ -80,7 +86,7 @@ public final class TownyWars extends JavaPlugin {
         if(isPreRelease) {
             Bukkit.getConsoleSender().sendMessage("You are using the pre-release of TownyWars! If any errors occur, please contact Discord using the link https://discord.gg/Etd4XXH");
         }
-
+        latestVersion = getDescription().getVersion();
         if(getServer().getPluginManager().getPlugin("Towny") == null) {
             Bukkit.getConsoleSender().sendMessage("Towny not found. Disabling...");
             Bukkit.getPluginManager().disablePlugin(this);
@@ -180,6 +186,15 @@ public final class TownyWars extends JavaPlugin {
 
         Bukkit.getConsoleSender().sendMessage("Initializing config.yml...");
         ConfigInit();
+        Bukkit.getConsoleSender().sendMessage("Checking for updates...");
+        Thread updateChecker = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                checkUpdates();
+            }
+        });
+        updateChecker.start();
+
         wm = new WarManager();
 
         try {
@@ -213,5 +228,40 @@ public final class TownyWars extends JavaPlugin {
         TextChannel textChannel = DiscordSRV.getPlugin().getDestinationTextChannelForGameChannelName(getConfig().getString("channel-name"));
         String prefix = getConfig().getString("message-prefix");
         textChannel.sendMessage(prefix + message).queue();
+    }
+
+    public boolean checkUpdates() {
+        try {
+            String url = "https://api.spigotmc.org/legacy/update.php?resource=80038/";
+
+            URL obj = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
+
+            connection.setRequestMethod("GET");
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            String inputLine;
+            StringBuffer response = new StringBuffer();
+
+            while ((inputLine = in.readLine()) != null) {
+                response.append(inputLine);
+            }
+
+            in.close();
+
+
+            if (response.toString().equals(getDescription().getVersion())) {
+                Bukkit.getConsoleSender().sendMessage("You are using latest version of TownyWars!");
+                return false;
+            } else {
+                Bukkit.getConsoleSender().sendMessage("New version of TownyWars has been found! (" + response.toString() + ")");
+                latestVersion = response.toString();
+                return true;
+            }
+        } catch (IOException e) {
+            Bukkit.getConsoleSender().sendMessage("Can't check updates!");
+            e.printStackTrace();
+            return false;
+        }
     }
 }
