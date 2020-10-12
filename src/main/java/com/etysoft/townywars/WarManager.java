@@ -1,7 +1,9 @@
 package com.etysoft.townywars;
 
+import com.etysoft.townywars.events.NeutralityChangeEvent;
 import com.etysoft.townywars.events.WarDeclareEvent;
 import com.etysoft.townywars.events.WarEndEvent;
+import com.etysoft.townywars.events.WarJoinEvent;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Town;
@@ -176,39 +178,51 @@ public class WarManager {
     }
 
     public void setNeutrality(Boolean neutrality, Town t) {
-        if(neutrality) {
-            if(!neutralslist.contains(t)) {
-                neutralslist.add(t);
-                if(TownyWars.instance.discord) {
-                    TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-neutral")).replace("%town%", t.getName()));
+        NeutralityChangeEvent neutralityChangeEvent = new NeutralityChangeEvent(t, neutrality);
+        TownyWars.callEvent(neutralityChangeEvent);
+        if (!neutralityChangeEvent.isCancelled()) {
+            if (neutrality) {
+                if (!neutralslist.contains(t)) {
+                    neutralslist.add(t);
+                    if (TownyWars.instance.discord) {
+                        TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-neutral")).replace("%town%", t.getName()));
+                    }
+                }
+            } else {
+                if (neutralslist.contains(t)) {
+                    neutralslist.remove(t);
+                    if (TownyWars.instance.discord) {
+                        TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-noneutral")).replace("%town%", t.getName()));
+                    }
                 }
             }
         } else {
-            if(neutralslist.contains(t)) {
-                neutralslist.remove(t);
-                if(TownyWars.instance.discord) {
-                    TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-noneutral")).replace("%town%", t.getName()));
-                }
-            }
+            Bukkit.getConsoleSender().sendMessage("[TownyWars] The change of neutrality was canceled by another plugin.");
         }
     }
 
     public void addTownToWar(Town t, War w, boolean isAside) {
         if(!isInWar(t)) {
             t.setAdminEnabledPVP(true);
-            if(isAside) {
-                w.addATown(t);
-                if(TownyWars.instance.discord) {
-                    TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-join-war")).replace("%town%", t.getName()).replace("%victim%", w.getVictim().getName()));
+            WarJoinEvent warJoinEvent = new WarJoinEvent(w, t, isAside);
+            TownyWars.callEvent(warJoinEvent);
+            if (!warJoinEvent.isCancelled()) {
+                if (isAside) {
+                    w.addATown(t);
+                    if (TownyWars.instance.discord) {
+                        TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-join-war")).replace("%town%", t.getName()).replace("%victim%", w.getVictim().getName()));
+                    }
+                } else {
+                    w.addVTown(t);
+                    if (TownyWars.instance.discord) {
+                        TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-join-war")).replace("%town%", t.getName()).replace("%victim%", w.getAttacker().getName()));
+                    }
                 }
+                addTownToWarList(t);
             } else {
-                w.addVTown(t);
-                if(TownyWars.instance.discord) {
-                    TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-join-war")).replace("%town%", t.getName()).replace("%victim%", w.getAttacker().getName()));
-                }
+                Bukkit.getConsoleSender().sendMessage("[TownyWars] Joining the war was canceled by another plugin.");
             }
 
-            addTownToWarList(t);
         }
     }
 
