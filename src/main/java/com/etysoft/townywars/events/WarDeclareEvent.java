@@ -15,6 +15,14 @@ public class WarDeclareEvent extends Event  implements Cancellable {
         this.victim = victim;
     }
 
+    public Town getAttaker() {
+        return attaker;
+    }
+
+    public Town getVictim() {
+        return victim;
+    }
+
     private static final HandlerList HANDLERS = new HandlerList();
     @Override
     public HandlerList getHandlers() {
