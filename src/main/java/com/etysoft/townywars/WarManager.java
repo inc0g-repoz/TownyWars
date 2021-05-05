@@ -134,6 +134,10 @@ public class WarManager {
                         break;
                     case "steal":
                         try {
+                            win.setAdminEnabledPVP(false);
+                            proig.setAdminEnabledPVP(false);
+                            TownyMessaging.sendPrefixedTownMessage(proig, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-lose")));
+                            TownyMessaging.sendPrefixedTownMessage(win, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-win")));
                             if (proig.getAccount().getHoldingBalance() >= 1) {
                                 win.getAccount().setBalance(win.getAccount().getHoldingBalance() + proig.getAccount().getHoldingBalance(), "War end");
                                 proig.getAccount().setBalance(0, "War steal");
@@ -147,6 +151,10 @@ public class WarManager {
                         }
                         break;
                     case "prize":
+                        TownyMessaging.sendPrefixedTownMessage(proig, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-lose")));
+                        TownyMessaging.sendPrefixedTownMessage(win, ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-win")));
+                        win.setAdminEnabledPVP(false);
+                        proig.setAdminEnabledPVP(false);
                         try {
                             win.getAccount().setBalance(win.getAccount().getHoldingBalance() + TownyWars.instance.getConfig().getDouble("prize"), "War end");
                         } catch (Exception e) {

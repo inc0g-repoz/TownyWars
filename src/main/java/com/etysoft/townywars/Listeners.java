@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.block.BlockDispenseEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -50,6 +51,13 @@ public class Listeners implements org.bukkit.event.Listener {
     public void nt(NewTownEvent n) {
         if(TownyWars.instance.getConfig().getBoolean("create-neutral")) {
             WarManager.getInstance().setNeutrality(true, n.getTown());
+        }
+    }
+
+    @EventHandler
+    public void BlockDispense(BlockDispenseEvent e) {
+        if (e.getItem().getType().getId() == 259) {
+            e.setCancelled(true);
         }
     }
 
