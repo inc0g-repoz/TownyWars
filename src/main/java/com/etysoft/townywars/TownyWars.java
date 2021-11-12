@@ -10,11 +10,6 @@ import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -176,24 +171,8 @@ public final class TownyWars extends JavaPlugin {
             return finals;
         });
 
-        Bukkit.getConsoleSender().sendMessage("Initializing bStats metrics...");
-        try {
-            int pluginId = 7801; // <-- Replace with the id of your plugin!
-            new Metrics(this, pluginId);
-        } catch (Exception e) {
-            Bukkit.getConsoleSender().sendMessage("Can't initialize metrics!");
-        }
-
         Bukkit.getConsoleSender().sendMessage("Initializing config.yml...");
         ConfigInit();
-        Bukkit.getConsoleSender().sendMessage("Checking for updates...");
-        Thread updateChecker = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                checkUpdates();
-            }
-        });
-        updateChecker.start();
 
         wm = new WarManager();
 
@@ -230,38 +209,4 @@ public final class TownyWars extends JavaPlugin {
         textChannel.sendMessage(prefix + message).queue();
     }
 
-    public boolean checkUpdates() {
-        try {
-            String url = "https://api.spigotmc.org/legacy/update.php?resource=80038/";
-
-            URL obj = new URL(url);
-            HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
-
-            connection.setRequestMethod("GET");
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-            String inputLine;
-            StringBuffer response = new StringBuffer();
-
-            while ((inputLine = in.readLine()) != null) {
-                response.append(inputLine);
-            }
-
-            in.close();
-
-
-            if (response.toString().equals(getDescription().getVersion())) {
-                Bukkit.getConsoleSender().sendMessage("You are using latest version of TownyWars!");
-                return false;
-            } else {
-                Bukkit.getConsoleSender().sendMessage("New version of TownyWars has been found! (" + response.toString() + ")");
-                latestVersion = response.toString();
-                return true;
-            }
-        } catch (IOException e) {
-            Bukkit.getConsoleSender().sendMessage("Can't check updates!");
-            e.printStackTrace();
-            return false;
-        }
-    }
 }

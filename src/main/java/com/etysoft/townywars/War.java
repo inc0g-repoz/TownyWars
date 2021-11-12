@@ -8,8 +8,10 @@ import java.util.Set;
 public class War {
     private Town attacker;
     private Town victim;
-    private Integer apoints;
-    private Integer vpoints;
+
+    private int apoints;
+    private int vpoints;
+
     public Town fromreqtown = null;
     private WarManager wm;
     private static Set<Town> asidetowns = new HashSet<Town>();
@@ -28,8 +30,6 @@ public class War {
             wm.addTownToWarList(a);
             wm.addTownToWarList(v);
             isCreated = true;
-        } else {
-            War w = null;
         }
     }
 

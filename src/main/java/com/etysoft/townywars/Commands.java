@@ -56,9 +56,9 @@ public class Commands implements CommandExecutor {
                                                 if (r.getTown().getAccount().getHoldingBalance() >= TownyWars.instance.getConfig().getDouble("price-declare")) {
                                                     if (TownyUniverse.getInstance().getDataSource().hasTown(args[1])) {
                                                         Town tod = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
-                                                        if (Objects.requireNonNull(Bukkit.getPlayer(tod.getMayor().getName())).isOnline() | !TownyWars.instance.getConfig().getBoolean("mayor-online")) {
-                                                            if (tod != null) {
-                                                                if (!WarManager.getInstance().isNeutral(tod) && !WarManager.getInstance().isNeutral(r.getTown())) {
+                                                        if (tod != null) {
+                                                            if (Objects.requireNonNull(Bukkit.getPlayer(tod.getMayor().getName())).isOnline() | !TownyWars.instance.getConfig().getBoolean("mayor-online")) {
+                                                            	if (!WarManager.getInstance().isNeutral(tod) && !WarManager.getInstance().isNeutral(r.getTown())) {
                                                                     if (!WarManager.getInstance().isInWar(r.getTown())) {
                                                                         boolean success = WarManager.getInstance().declare(r.getTown(), tod);
                                                                         if (!success) {
@@ -70,9 +70,9 @@ public class Commands implements CommandExecutor {
                                                                 } else {
                                                                     p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-ntown")));
                                                                 }
-                                                            } else {
-                                                                p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
                                                             }
+                                                        } else {
+                                                            p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
                                                         }
                                                     } else {
                                                         sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-online")));
@@ -104,21 +104,43 @@ public class Commands implements CommandExecutor {
                                         if (WarManager.getInstance().isInWar(TownyUniverse.getInstance().getDataSource().getTown(args[1]))) {
                                             War w = WarManager.getInstance().getTownWar(TownyUniverse.getInstance().getDataSource().getTown(args[1]));
                                             sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin1")).replace("%s", args[1])));
+
+                                            /*
+
                                             StringBuilder am = new StringBuilder();
-                                            StringBuilder jm = new StringBuilder();
-                                            for (Town t :
-                                                    w.getATowns()) {
+                                            for (Town t : w.getATowns()) {
                                                 am.append(t.getName()).append("; ");
                                             }
+                                            sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin2")).replace("%s", w.getAttacker().getName()) + am));
 
-                                            for (Town t :
-                                                    w.getVTowns()) {
+                                            StringBuilder jm = new StringBuilder();
+                                            for (Town t : w.getVTowns()) {
                                                 jm.append(t.getName()).append("; ");
                                             }
-
-                                            sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin2")).replace("%s", w.getAttacker().getName()) + am));
                                             sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin2")).replace("%s", w.getVictim().getName()) + jm));
-                                            sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin3")).replace("%s", w.getAttacker().getName()).replace("%k", w.getAPoints() + "").replace("%j", w.getVictim().getName()).replace("%y", w.getVPoints() + "")));
+
+                                            */
+
+                                            sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin2")).replace("%s", w.getAttacker().getName())));
+                                            for (Town t : w.getATowns()) {
+                                                if (t == null) {
+                                                    continue;
+                                                }
+                                                sender.sendMessage("- " + t.getName());
+                                            }
+
+                                            sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin2")).replace("%s", w.getVictim().getName())));
+                                            for (Town t : w.getVTowns()) {
+                                                if (t == null) {
+                                                    continue;
+                                                }
+                                                sender.sendMessage("- " + t.getName());
+                                            }
+
+                                            sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin3")).replace("%s", w.getAttacker().getName())
+                                                    .replace("%k", w.getAPoints() + "")
+                                                    .replace("%j", w.getVictim().getName())
+                                                    .replace("%y", w.getVPoints() + "")));
                                         } else {
                                             sender.sendMessage(ColorCodes.toColor(c.getString("msg-peace")));
                                         }
@@ -127,8 +149,7 @@ public class Commands implements CommandExecutor {
                                     }
                                 } else {
                                     sender.sendMessage(ColorCodes.toColor(TownyWars.instance.getConfig().getString("msg-war")));
-                                    for (War w :
-                                            WarManager.getInstance().getWars()) {
+                                    for (War w : WarManager.getInstance().getWars()) {
                                         String members = "";
                                         if (w.getATowns().size() != 0 && w.getATowns().size() != 0) {
                                             int m = w.getATowns().size() + w.getATowns().size();

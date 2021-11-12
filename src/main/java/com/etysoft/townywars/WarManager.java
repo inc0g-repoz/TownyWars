@@ -88,12 +88,13 @@ public class WarManager {
         TownyWars.callEvent(warEndEvent);
         Town proig = w.getZeroPointTown();
         Town win = w.getNotZeroPointTown();
-        if(TownyWars.instance.discord) {
+
+        if (TownyWars.instance.discord) {
             TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-end-lose")).replace("%loser%", proig.getName()).replace("%winner%", win.getName()));
             TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-end-win")).replace("%loser%", proig.getName()).replace("%winner%", win.getName()));
         }
 
-        if(!warEndEvent.isCancelled()) {
+        if (!warEndEvent.isCancelled()) {
             if (withpain) {
                 String action = TownyWars.instance.getConfig().getString("lose-action");
                 assert action != null;
@@ -169,20 +170,26 @@ public class WarManager {
             }
         }
 
-        w.clear();
-        wars.remove(w);
+        // Removing victim
+        w.getVictim().setAdminEnabledPVP(false);
+        townswarlist.remove(w.getVictim().getName());
+
+        // Removing the attacker
+        w.getAttacker().setAdminEnabledPVP(false);
+        townswarlist.remove(w.getAttacker().getName());
+
+        // Removing other towns were involved too
         for (Town t : w.getATowns()) {
             t.setAdminEnabledPVP(false);
             townswarlist.remove(t.getName());
         }
-
         for (Town t : w.getVTowns()) {
             t.setAdminEnabledPVP(false);
             townswarlist.remove(t.getName());
         }
 
-        townswarlist.remove(w.getVictim().getName());
-        townswarlist.remove(w.getAttacker().getName());
+        wars.remove(w);
+        w.clear();
     }
 
     public void setNeutrality(Boolean neutrality, Town t) {
@@ -236,36 +243,42 @@ public class WarManager {
 
 
     public boolean declare(Town a, Town j) {
-       if(a != j) {
-           if(!WarManager.getInstance().isInWar(a) && !WarManager.getInstance().isInWar(j)) {
-               WarDeclareEvent warDeclareEvent = new WarDeclareEvent(a, j);
-               TownyWars.callEvent(warDeclareEvent);
-               if(!warDeclareEvent.isCancelled()) {
-                   a.setAdminEnabledPVP(true);
-                   j.setAdminEnabledPVP(true);
-                   wars.add(new War(a, j, this));
-                   if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 2) {
-                       Bukkit.broadcastMessage(ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare")).replace("%s", a.getName()).replace("%j", j.getName())));
-                       if(TownyWars.instance.discord) {
-                           TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-war-declare")).replace("%attacker%", a.getName()).replace("%victim%", j.getName()));
-                       }
-                   } else if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 1) {
-                       TownyMessaging.sendTownMessagePrefixed(j, ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare")).replace("%s", a.getName()).replace("%j", j.getName())));
-                       TownyMessaging.sendTownMessagePrefixed(a, ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare")).replace("%s", a.getName()).replace("%j", j.getName())));
-                       if(TownyWars.instance.discord) {
-                           TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-war-declare")).replace("%attacker%", a.getName()).replace("%victim%", j.getName()));
-                       }
-                   }
-                   return true;
-               } else {
-                   return false;
-               }
-           } else {
-               return  false;
-           }
-       } else {
-           return false;
-       }
+        if (a != j) {
+            if (!WarManager.getInstance().isInWar(a) && !WarManager.getInstance().isInWar(j)) {
+                WarDeclareEvent warDeclareEvent = new WarDeclareEvent(a, j);
+                TownyWars.callEvent(warDeclareEvent);
+                if (!warDeclareEvent.isCancelled()) {
+                    a.setAdminEnabledPVP(true);
+                    j.setAdminEnabledPVP(true);
+                    War war = new War(a, j, this);
+
+                    if (TownyWars.instance.getConfig().getBoolean("sidebar")) {
+                        Sidebar.create(war);
+                    }
+
+                    wars.add(war);
+                    if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 2) {
+                        Bukkit.broadcastMessage(ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare")).replace("%s", a.getName()).replace("%j", j.getName())));
+                        if (TownyWars.instance.discord) {
+                            TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-war-declare")).replace("%attacker%", a.getName()).replace("%victim%", j.getName()));
+                        }
+                    } else if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 1) {
+                        TownyMessaging.sendTownMessagePrefixed(j, ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare")).replace("%s", a.getName()).replace("%j", j.getName())));
+                        TownyMessaging.sendTownMessagePrefixed(a, ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare")).replace("%s", a.getName()).replace("%j", j.getName())));
+                        if(TownyWars.instance.discord) {
+                            TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-war-declare")).replace("%attacker%", a.getName()).replace("%victim%", j.getName()));
+                        }
+                    }
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return  false;
+            }
+        } else {
+            return false;
+        }
     }
 
 

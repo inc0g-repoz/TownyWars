@@ -5,6 +5,8 @@
 
 # TRANSLATIONS (%s is a placeholder for version, name etc.)
 
+sidebar: false
+
 #Info
 msg-compatible: "&f[&aTowny&6Wars&f] &aCompatible with current Towny version"
 msg-nocompatible: "&f[&aTowny&6Wars&f] &cWasn't tested with Towny %s"
