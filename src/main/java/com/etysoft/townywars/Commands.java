@@ -23,7 +23,8 @@ public class Commands implements CommandExecutor {
         instance = TownyWars;
     }
 
-    @Override
+    @SuppressWarnings("deprecation") // idgaf
+	@Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (label.equals("twar")) {
             try {
@@ -104,22 +105,6 @@ public class Commands implements CommandExecutor {
                                         if (WarManager.getInstance().isInWar(TownyUniverse.getInstance().getDataSource().getTown(args[1]))) {
                                             War w = WarManager.getInstance().getTownWar(TownyUniverse.getInstance().getDataSource().getTown(args[1]));
                                             sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin1")).replace("%s", args[1])));
-
-                                            /*
-
-                                            StringBuilder am = new StringBuilder();
-                                            for (Town t : w.getATowns()) {
-                                                am.append(t.getName()).append("; ");
-                                            }
-                                            sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin2")).replace("%s", w.getAttacker().getName()) + am));
-
-                                            StringBuilder jm = new StringBuilder();
-                                            for (Town t : w.getVTowns()) {
-                                                jm.append(t.getName()).append("; ");
-                                            }
-                                            sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin2")).replace("%s", w.getVictim().getName()) + jm));
-
-                                            */
 
                                             sender.sendMessage(ColorCodes.toColor(Objects.requireNonNull(c.getString("msg-warin2")).replace("%s", w.getAttacker().getName())));
                                             for (Town t : w.getATowns()) {
@@ -280,36 +265,55 @@ public class Commands implements CommandExecutor {
                             }
                             break;
                         case "invite":
-                            if (sender.hasPermission("twar.mayor")) {
-                                Player p = (Player) sender;
-                                try {
-                                    Resident r = TownyUniverse.getInstance().getDataSource().getResident(p.getName());
-                                    if (args.length > 1) {
-                                        Town from = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
-                                        if (!WarManager.getInstance().isInWar(from)) {
-                                            boolean a = false;
-                                            if (WarManager.getInstance().getTownWar(r.getTown()).getAttacker() == r.getTown()) {
-                                                a = true;
-                                            }
 
-                                            if (WarManager.getInstance().hasJoinRequest(from, r.getTown())) {
-                                                WarManager.getInstance().addTownToWar(from, WarManager.getInstance().getTownWar(r.getTown()), a);
-                                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-accept")));
-                                            } else {
-                                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-norecrec")));
-                                            }
-                                        } else {
-                                            sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-inwar")));
-                                        }
-                                    } else {
-                                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-args")));
-                                    }
-                                } catch (Exception e) {
-                                    sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-notown")));
-                                }
-                            } else {
-                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
+                        	// You're just a bitch
+                            if (!sender.hasPermission("twar.mayor")) {
+                            	sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
+                            	return true;
                             }
+
+                            Player p = (Player) sender;
+
+                            // The guy is an asshole so is not gonna handle all the exceptions on his own
+                            try {
+
+                            	// So, we get a resident from the player instance
+                                Resident r = TownyUniverse.getInstance().getDataSource().getResident(p.getName());
+
+                                // Not enough args
+                                if (args.length < 2) {
+                                    sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-args")));
+                                    return true;
+                                }
+
+                                // Player definitely has argumented a town to invite
+                            	Town from = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
+
+                            	// It is in war, fuck it
+                                if (WarManager.getInstance().isInWar(from)) {
+                                	sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-inwar")));
+                                	return true;
+                                }
+
+                                // I DONNO WTF IS THIS SHIT
+                                boolean playerIsAside = false;
+                                if (WarManager.getInstance().getTownWar(r.getTown()).getAttacker() == r.getTown()) {
+                                    playerIsAside = true;
+                                }
+
+                                // Guess, guy has no request, fuck him
+                                if (!WarManager.getInstance().hasJoinRequest(from, r.getTown())) {
+                                    sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-norecrec")));
+                                    return true;
+                                }
+
+                                WarManager.getInstance().addTownToWar(from, WarManager.getInstance().getTownWar(r.getTown()), playerIsAside);
+                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-accept")));
+                    
+                            } catch (Exception e) {
+                                sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-notown")));
+                            }
+
                             break;
                         case "n":
                             if (args.length == 1) {
