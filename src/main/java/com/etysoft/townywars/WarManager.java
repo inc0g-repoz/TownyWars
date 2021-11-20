@@ -15,6 +15,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class WarManager {
+
     private static  Set<Town> neutralslist = new HashSet<>();
     private static Map<String, Town> townswarlist = new ConcurrentHashMap<>();
     private static Map<Town, Town> addreq = new ConcurrentHashMap<>();
