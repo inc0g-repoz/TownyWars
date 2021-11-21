@@ -52,6 +52,7 @@ public class DataManager {
                 // считываем остальные строки в цикле
                 line = reader.readLine();
             }
+            reader.close();
         } catch (FileNotFoundException e) {
             Bukkit.getConsoleSender().sendMessage("Neutrals list not found.");
         } catch (Exception e) {
