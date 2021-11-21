@@ -125,33 +125,33 @@ public class Listeners implements org.bukkit.event.Listener {
             }
         }
 
-        Player victim = (Player) edbee.getEntity();
+        Player deadGuy = (Player) edbee.getEntity();
         try {
-            Resident r1 = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(attacker.getName());
-            Resident r2 = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(victim.getName());
-            War war = WarManager.getInstance().getTownWar(r1.getTown());
+            Resident killer = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(attacker.getName());
+            Resident victim = com.palmergames.bukkit.towny.TownyUniverse.getInstance().getDataSource().getResident(deadGuy.getName());
+            War war = WarManager.getInstance().getTownWar(killer.getTown());
             if (war != null) {
-                if (war.hasTown(r2.getTown())) {
-                    if (war.isASide(r1.getTown()) != war.isASide(r2.getTown())) {
-                        Town tv = war.minus(r2.getTown());
+                if (war.hasTown(victim.getTown())) {
+                    if (war.isASide(killer.getTown()) != war.isASide(victim.getTown())) {
+                        Town tv = war.minus(victim.getTown());
                         if (tv != null) {
                             int nmessage = TownyWars.instance.getConfig().getInt("public-announce-warend");
                             if (nmessage == 2) {
                                 Bukkit.broadcastMessage(ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-end"))
                                         .replace("%s", tv.getName())
-                                        .replace("%j", r2.getTown().getName())));
+                                        .replace("%j", victim.getTown().getName())));
                             } else {
-                                TownyMessaging.sendTownMessagePrefixed(r1.getTown(), ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-end"))
+                                TownyMessaging.sendTownMessagePrefixed(killer.getTown(), ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-end"))
                                         .replace("%s", tv.getName())
-                                        .replace("%j", r2.getTown().getName())));
-                                TownyMessaging.sendTownMessagePrefixed(r2.getTown(), ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-end"))
+                                        .replace("%j", victim.getTown().getName())));
+                                TownyMessaging.sendTownMessagePrefixed(victim.getTown(), ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-end"))
                                         .replace("%s", tv.getName())
-                                        .replace("%j", r2.getTown().getName())));
+                                        .replace("%j", victim.getTown().getName())));
                             }
 
                             WarManager.getInstance().end(war, true);
                         } else {
-                            victim.sendMessage(ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-points"))
+                            deadGuy.sendMessage(ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-points"))
                                     .replace("%s", war.getAPoints() + "")
                                     .replace("%k", war.getVPoints() + "")));
                             attacker.sendMessage(ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-points"))
