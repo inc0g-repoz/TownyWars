@@ -28,4 +28,8 @@ public class WarEndEvent extends Event implements Cancellable {
     public void setCancelled(boolean b) {
         canceled = b;
     }
+
+	public War getWar() {
+		return war;
+	}
 }
