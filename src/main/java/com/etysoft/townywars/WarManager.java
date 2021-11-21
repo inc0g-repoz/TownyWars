@@ -91,8 +91,13 @@ public class WarManager {
         Town win = w.getNotZeroPointTown();
 
         if (TownyWars.instance.discord) {
-            TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-end-lose")).replace("%loser%", proig.getName()).replace("%winner%", win.getName()));
-            TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-end-win")).replace("%loser%", proig.getName()).replace("%winner%", win.getName()));
+            TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-end-lose"))
+                    .replace("%loser%", proig.getName())
+                    .replace("%winner%", win.getName()));
+
+            TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-end-win"))
+                    .replace("%loser%", proig.getName())
+                    .replace("%winner%", win.getName()));
         }
 
         if (!warEndEvent.isCancelled()) {
@@ -226,12 +231,16 @@ public class WarManager {
                 if (isAside) {
                     w.addATown(t);
                     if (TownyWars.instance.discord) {
-                        TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-join-war")).replace("%town%", t.getName()).replace("%victim%", w.getVictim().getName()));
+                        TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-join-war"))
+                                .replace("%town%", t.getName())
+                                .replace("%victim%", w.getVictim().getName()));
                     }
                 } else {
                     w.addVTown(t);
                     if (TownyWars.instance.discord) {
-                        TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-join-war")).replace("%town%", t.getName()).replace("%victim%", w.getAttacker().getName()));
+                        TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-join-war"))
+                                .replace("%town%", t.getName())
+                                .replace("%victim%", w.getAttacker().getName()));
                     }
                 }
                 addTownToWarList(t);
@@ -259,15 +268,28 @@ public class WarManager {
 
                     wars.add(war);
                     if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 2) {
-                        Bukkit.broadcastMessage(ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare")).replace("%s", a.getName()).replace("%j", j.getName())));
+                        Bukkit.broadcastMessage(ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare"))
+                                .replace("%s", a.getName())
+                                .replace("%j", j.getName())));
+
                         if (TownyWars.instance.discord) {
-                            TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-war-declare")).replace("%attacker%", a.getName()).replace("%victim%", j.getName()));
+                            TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-war-declare"))
+                                    .replace("%attacker%", a.getName())
+                                    .replace("%victim%", j.getName()));
                         }
                     } else if (TownyWars.instance.getConfig().getInt("public-announce-warstart") == 1) {
-                        TownyMessaging.sendTownMessagePrefixed(j, ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare")).replace("%s", a.getName()).replace("%j", j.getName())));
-                        TownyMessaging.sendTownMessagePrefixed(a, ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare")).replace("%s", a.getName()).replace("%j", j.getName())));
+                        TownyMessaging.sendTownMessagePrefixed(j, ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare"))
+                                .replace("%s", a.getName())
+                                .replace("%j", j.getName())));
+                        
+                        TownyMessaging.sendTownMessagePrefixed(a, ColorCodes.toColor(Objects.requireNonNull(TownyWars.instance.getConfig().getString("msg-declare"))
+                                .replace("%s", a.getName())
+                                .replace("%j", j.getName())));
+
                         if(TownyWars.instance.discord) {
-                            TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-war-declare")).replace("%attacker%", a.getName()).replace("%victim%", j.getName()));
+                            TownyWars.instance.sendDiscord(Objects.requireNonNull(TownyWars.instance.getConfig().getString("message-war-declare"))
+                                    .replace("%attacker%", a.getName())
+                                    .replace("%victim%", j.getName()));
                         }
                     }
                     return true;
