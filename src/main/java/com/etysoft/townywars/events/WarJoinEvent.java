@@ -41,5 +41,9 @@ public class WarJoinEvent extends Event implements Cancellable {
     public void setCancelled(boolean b) {
         canceled = b;
     }
+
+	public Town getNewTown() {
+		return newTown;
+	}
 }
 
