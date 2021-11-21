@@ -73,8 +73,6 @@ public class Sidebar {
         updateScore(war.getVictim().getName(), war.getVPoints());
 
         // Rendering scores for all users
-        war.getAttacker().getResidents().forEach(r -> updatePlayerScoreboard(r));
-        war.getVictim().getResidents().forEach(r -> updatePlayerScoreboard(r));
         war.getATowns().forEach(t -> t.getResidents().forEach(r -> updatePlayerScoreboard(r)));
         war.getVTowns().forEach(t -> t.getResidents().forEach(r -> updatePlayerScoreboard(r)));
     };
