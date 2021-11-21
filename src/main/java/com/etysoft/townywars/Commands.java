@@ -1,24 +1,24 @@
 package com.etysoft.townywars;
 
-import com.palmergames.bukkit.towny.TownyMessaging;
-import com.palmergames.bukkit.towny.TownyUniverse;
-import com.palmergames.bukkit.towny.exceptions.EconomyException;
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
-import com.palmergames.bukkit.towny.object.Resident;
-import com.palmergames.bukkit.towny.object.Town;
+import java.util.Objects;
+import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
-
-import java.util.Objects;
-import java.util.Set;
+import com.palmergames.bukkit.towny.TownyMessaging;
+import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.exceptions.EconomyException;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 
 public class Commands implements CommandExecutor {
-    public static TownyWars instance;
+
+    private TownyWars instance;
+
     public Commands(TownyWars TownyWars) {
         instance = TownyWars;
     }
@@ -58,7 +58,8 @@ public class Commands implements CommandExecutor {
                                                     if (TownyUniverse.getInstance().getDataSource().hasTown(args[1])) {
                                                         Town tod = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
                                                         if (tod != null) {
-                                                            if (Objects.requireNonNull(Bukkit.getPlayer(tod.getMayor().getName())).isOnline() | !TownyWars.instance.getConfig().getBoolean("mayor-online")) {
+                                                            if (Objects.requireNonNull(Bukkit.getPlayer(tod.getMayor().getName())).isOnline()
+                                                            		|| !TownyWars.instance.getConfig().getBoolean("mayor-online")) {
                                                             	if (!WarManager.getInstance().isNeutral(tod) && !WarManager.getInstance().isNeutral(r.getTown())) {
                                                                     if (!WarManager.getInstance().isInWar(r.getTown())) {
                                                                         boolean success = WarManager.getInstance().declare(r.getTown(), tod);
@@ -76,10 +77,11 @@ public class Commands implements CommandExecutor {
                                                             p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
                                                         }
                                                     } else {
-                                                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-online")));
+                                                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-wrtown")));
                                                     }
                                                 } else {
-                                                    p.sendMessage(ColorCodes.toColor(Objects.requireNonNull(instance.getConfig().getString("msg-money")).replace("%s", TownyWars.instance.getConfig().getDouble("price-declare") + "")));
+                                                    p.sendMessage(ColorCodes.toColor(Objects.requireNonNull(instance.getConfig().getString("msg-money"))
+                                                            .replace("%s", TownyWars.instance.getConfig().getDouble("price-declare") + "")));
                                                 }
                                             } else {
                                                 sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-args")));
@@ -88,7 +90,6 @@ public class Commands implements CommandExecutor {
                                             p.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-notown")));
                                         }
                                     } catch (NotRegisteredException | EconomyException e) {
-                                        e.printStackTrace();
                                     }
                                 } else {
                                     sender.sendMessage("You can't do it from Console!");
@@ -228,24 +229,29 @@ public class Commands implements CommandExecutor {
                             }
                             break;
                         case "joinwar":
-                            if (sender.hasPermission("twar.mayor")) {
-                                Player p = (Player) sender;
-                                try {
-                                    Resident r = TownyUniverse.getInstance().getDataSource().getResident(p.getName());
-                                    if (!WarManager.getInstance().isSendedJoinRequest(r.getTown())) {
-                                        if (args.length > 1) {
-                                            Town t = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
-                                            WarManager.getInstance().sendJoinRequest(r.getTown(), t, p);
-                                        } else {
-                                            sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-args")));
-                                        }
-                                    } else {
-                                        sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-sended")));
-                                    }
-                                } catch (Exception ignored) { }
-                            } else {
+                            if (!sender.hasPermission("twar.mayor")) {
                                 sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
+                                return true;
                             }
+
+                            try {
+                            	Player p = (Player) sender;
+                                Resident r = TownyUniverse.getInstance().getDataSource().getResident(p.getName());
+
+                                if (WarManager.getInstance().isSendedJoinRequest(r.getTown())) {
+                                    sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("msg-sended")));
+                                }
+
+                                if (args.length < 2) {
+                                	sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-args")));
+                                	return true;
+                                }
+
+                                Town t = TownyUniverse.getInstance().getDataSource().getTown(args[1]);
+                                WarManager.getInstance().sendJoinRequest(r.getTown(), t, p);
+                            } catch (Exception ignored) {
+                            }
+
                             break;
                         case "canceljw":
                             if (sender.hasPermission("twar.mayor")) {
@@ -266,7 +272,6 @@ public class Commands implements CommandExecutor {
                             break;
                         case "invite":
 
-                        	// You're just a bitch
                             if (!sender.hasPermission("twar.mayor")) {
                             	sender.sendMessage(ColorCodes.toColor(instance.getConfig().getString("no-perm")));
                             	return true;
